@@ -1,6 +1,6 @@
 __author__ = 'scorpheus'
 
-from action import nb_actions
+from actions import nb_actions
 import numpy as np
 
 # the fragment contains only one event:

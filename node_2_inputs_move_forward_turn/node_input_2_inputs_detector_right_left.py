@@ -1,12 +1,13 @@
 __author__ = 'scorpheus'
 
+from node_inputs import NodeInputs
 from memory import Fragment
 
 
-class NodeInputs:
+class NodeInputs2InputsDetectorRightLeft(NodeInputs):
 
 	def __init__(self):
-		pass
+		super().__init__()
 
 	def GetCurrentNodeFragment(self, node):
 		current_fragment = Fragment(0)

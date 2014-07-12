@@ -3,7 +3,7 @@ __author__ = 'scorpheus'
 import numpy as np
 import math
 import sys
-from action import nb_actions
+from actions import nb_actions
 
 class NeuralNetwork:
 	nb_neurone = 500
