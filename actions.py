@@ -3,7 +3,10 @@ __author__ = 'scorpheus'
 # contain the actions the node can do
 
 
-class Actions:
+class BaseActions:
 
-	def __init__(self):
-		self.nb_actions = 0
+	def __init__(self, nb_actions):
+		self.nb_actions = nb_actions
+
+	def execute_action(self, action_type, node):
+		pass

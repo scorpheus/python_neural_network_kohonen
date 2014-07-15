@@ -1,6 +1,5 @@
 __author__ = 'scorpheus'
 
-from actions import nb_actions
 import numpy as np
 
 # the fragment contains only one event:
@@ -22,11 +21,12 @@ class Fragment:
 
 class Memory:
 
-	def __init__(self):
+	def __init__(self, nb_actions):
 		self.fragment_array = np.array([])
 
 		# init the array for the count of nb fragment per action
-		self.m_NbFragmentPerActionArray = np.zeros(nb_actions)
+		self.nb_actions = nb_actions
+		self.m_NbFragmentPerActionArray = np.zeros(self.nb_actions)
 
 	def GetNbFragmentPerActionArray(self):
 		return self.m_NbFragmentPerActionArray
@@ -42,4 +42,4 @@ class Memory:
 		self.m_NbFragmentPerActionArray[_NewState.associated_action] += 1
 
 		# add the state into the pool
-		self.fragment_array.push_back(_NewState)
+		self.fragment_array = np.append(self.fragment_array, [_NewState])
