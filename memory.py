@@ -31,9 +31,6 @@ class Memory:
 	def GetNbFragmentPerActionArray(self):
 		return self.m_NbFragmentPerActionArray
 
-	def GetFragmentArray(self):
-		return self.fragment_array
-
 	def GetNbFragment(self):
 		return self.fragment_array.size
 

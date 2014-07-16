@@ -119,7 +119,7 @@ class NeuralNetwork:
 		l_save_action_score_per_neuron = np.zeros(self.nb_neurone, self.m_MemoryGoodAction.nb_actions)
 
 		#take from the state Memory who already have a good action
-		l_fragment_array = self.m_MemoryGoodAction.GetFragmentArray()
+		l_fragment_array = self.m_MemoryGoodAction.fragment_array
 		l_nb_fragment = l_fragment_array.size()
 	
 		# save this division for the activation area
@@ -232,3 +232,4 @@ class NeuralNetwork:
 				l_CurrentWinner = id_neurone
 	
 		return l_CurrentWinner
+

@@ -25,6 +25,7 @@ class Node:
 
 	def draw(self, pygame_draw, window):
 		self.inputs.draw(pygame_draw, window)
+		self.kohonen_behaviour.draw(pygame_draw, window)
 
 		radius = 5
 		integer_pos = Vec2d(int(self.pos.x), int(self.pos.y))
