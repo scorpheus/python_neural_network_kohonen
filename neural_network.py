@@ -5,7 +5,7 @@ import math
 import sys
 
 class NeuralNetwork:
-	nb_neurone = 500
+	nb_neurone = 50
 
 	START_ACTIVATION_AREA = 0.20
 	START_LEARNING_RATE = 0.30
@@ -31,7 +31,7 @@ class NeuralNetwork:
 		# contain max weight for each input
 		self.m_MaxWeightInputsArray = np.ones(self.m_NbInput)
 	
-	def Update(self, _InputArray):
+	def Update(self, _InputArray, _map_neural_network_to_memory):
 	
 		self.g_ActivationArea -= 0.0005
 		#
@@ -68,43 +68,44 @@ class NeuralNetwork:
 		# create the float array
 		l_CurrentWinner = self.FindTheWinner(_InputArray, True)
 
-		# save this division for the activation area
-		l_DivActivationArea = 1/(2 * self.g_ActivationArea*self.g_ActivationArea)
+		if _map_neural_network_to_memory:
+			# save this division for the activation area
+			l_DivActivationArea = 1/(2 * self.g_ActivationArea*self.g_ActivationArea)
 
-		# knowing who is the winner, update his weight and the weight of his neighbors
-		for id_neurone in range(self.nb_neurone):
+			# knowing who is the winner, update his weight and the weight of his neighbors
+			for id_neurone in range(self.nb_neurone):
 
-			l_SumDistance = 0
+				l_SumDistance = 0
 
-			# find the distance from the winner
-			for input in range(self.m_NbInput):
+				# find the distance from the winner
+				for input in range(self.m_NbInput):
 
-				# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-				l_WeightLinkValueWinner = self.inputs_array[input][l_CurrentWinner] / self.m_MaxWeightInputsArray[input]
-				l_WeightLinkValue =  self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
+					# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
+					l_WeightLinkValueWinner = self.inputs_array[input][l_CurrentWinner] / self.m_MaxWeightInputsArray[input]
+					l_WeightLinkValue = self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
 
-				l_SumDistance += (l_WeightLinkValueWinner - l_WeightLinkValue) * (l_WeightLinkValueWinner - l_WeightLinkValue)
+					l_SumDistance += (l_WeightLinkValueWinner - l_WeightLinkValue) * (l_WeightLinkValueWinner - l_WeightLinkValue)
 
 
-			l_Distance = math.exp((-(l_SumDistance*l_DivActivationArea))) * self.g_LearningRate
+				l_Distance = math.exp((-(l_SumDistance*l_DivActivationArea))) * self.g_LearningRate
 
-			for input in range(self.m_NbInput):
+				for input in range(self.m_NbInput):
 
-				# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-				l_InputValue = _InputArray[input]
-				l_WeightLinkValue = self.inputs_array[input][id_neurone]
+					# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
+					l_InputValue = _InputArray[input]
+					l_WeightLinkValue = self.inputs_array[input][id_neurone]
 
-				self.inputs_array[input][id_neurone] = l_WeightLinkValue + l_Distance*(l_InputValue - l_WeightLinkValue)
+					self.inputs_array[input][id_neurone] = l_WeightLinkValue + l_Distance*(l_InputValue - l_WeightLinkValue)
 
-		## for the winner, update and put his own input entry to the near state
-		#for(jint i= 0; i<m_NbInput; ++i)
-		#{
-		#	# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-		#	l_InputValue = _InputArray[i];
-		#	l_WeightLinkValue = m_NeuronalArray[1]->at(l_CurrentWinner)->m_TabInput[i];
+			## for the winner, update and put his own input entry to the near state
+			#for(jint i= 0; i<m_NbInput; ++i)
+			#{
+			#	# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
+			#	l_InputValue = _InputArray[i];
+			#	l_WeightLinkValue = m_NeuronalArray[1]->at(l_CurrentWinner)->m_TabInput[i];
 
-		#	m_NeuronalArray[1]->at(l_CurrentWinner)->m_TabInput[i] = l_WeightLinkValue + (l_InputValue - l_WeightLinkValue);
-		#}
+			#	m_NeuronalArray[1]->at(l_CurrentWinner)->m_TabInput[i] = l_WeightLinkValue + (l_InputValue - l_WeightLinkValue);
+			#}
 
 		return self.neurone_action_array[l_CurrentWinner]
 
@@ -116,21 +117,22 @@ class NeuralNetwork:
 			return True #if this doesn't exist , don't lose time to labelling
 
 		# save the score for each action on each neurone and fill with 0
-		l_save_action_score_per_neuron = np.zeros(self.nb_neurone, self.m_MemoryGoodAction.nb_actions)
+		l_save_action_score_per_neuron = np.zeros((self.nb_neurone, self.m_MemoryGoodAction.nb_actions))
 
 		#take from the state Memory who already have a good action
 		l_fragment_array = self.m_MemoryGoodAction.fragment_array
-		l_nb_fragment = l_fragment_array.size()
+		l_nb_fragment = self.m_MemoryGoodAction.GetNbFragment()
 	
 		# save this division for the activation area
 		l_DivActivationArea = 1.0 / (2.0 * self.g_ActivationArea * self.g_ActivationArea)
 	
 		# array for the number of each action, because if one action have 100 inputs and another one just 2 inputs, it's unfair and the count is false
 		l_MemoryNbFragmentPerAction = self.m_MemoryGoodAction.GetNbFragmentPerActionArray()
-		l_ArrayNbFragmentsPerAction = [self.m_MemoryGoodAction.nb_actions]
+		l_ArrayNbFragmentsPerAction = np.zeros(self.m_MemoryGoodAction.nb_actions)
 	
 		for action in range(self.m_MemoryGoodAction.nb_actions):
-			l_ArrayNbFragmentsPerAction[action] = 1.0/l_MemoryNbFragmentPerAction[action]
+			if l_MemoryNbFragmentPerAction[action] != 0:
+				l_ArrayNbFragmentsPerAction[action] = 1.0/l_MemoryNbFragmentPerAction[action]
 
 		l_UpdateTheMaxWeightArray = True
 	
@@ -143,26 +145,21 @@ class NeuralNetwork:
 			l_GoodAction = l_current_fragment.associated_action
 	
 			#take the array of input from this state
-			l_TempInputFragment = l_current_fragment.GetTabState()
+			l_TempInputFragment = l_current_fragment.input_array
 	
 			# find the winner for this input
 			l_id_neurone_winner = self.FindTheWinner(l_TempInputFragment, l_UpdateTheMaxWeightArray)
-	
-			# save this input array for the winner
-			l_TempWinnerInputWeightArray = self.inputs_array[l_id_neurone_winner]
-	
+
 			# add this score to the neighbors
 			for id_neurone in range(self.nb_neurone):
 
 				l_SumDistance = 0
-	
-				l_TempInputWeightArray = self.inputs_array[id_neurone]
-	
+
 				# find the distance from the winner
 				for input in range(self.m_NbInput):
 					# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-					l_WeightLinkValueWinner = l_TempWinnerInputWeightArray[input] / self.m_MaxWeightInputsArray[input]
-					l_WeightLinkValue = l_TempInputWeightArray[input] / self.m_MaxWeightInputsArray[input]
+					l_WeightLinkValueWinner = self.inputs_array[input][l_id_neurone_winner] / self.m_MaxWeightInputsArray[input]
+					l_WeightLinkValue = self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
 	
 					l_SumDistance += (l_WeightLinkValueWinner - l_WeightLinkValue) * (l_WeightLinkValueWinner - l_WeightLinkValue)
 

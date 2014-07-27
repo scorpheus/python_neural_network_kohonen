@@ -3,9 +3,9 @@ __author__ = 'scorpheus'
 import sys
 from node import Node
 
-from node_1_input_move_backward_stop.node_input_1_input_dist_front import NodeInputs
-from node_1_input_move_backward_stop.action_2_backward_stop import Actions
-from node_1_input_move_backward_stop.decision_maker import DecisionMaker
+from node_1_input_move_backward_stop_forward.node_input_1_input_dist_front import NodeInputs
+from node_1_input_move_backward_stop_forward.action_3_backward_stop_forward import Actions
+from node_1_input_move_backward_stop_forward.decision_maker import DecisionMaker
 
 #import and init pygame
 import pygame
@@ -13,7 +13,6 @@ pygame.init()
 
 #create the screen
 window = pygame.display.set_mode((640, 480))
-
 pouipouin_inputs = NodeInputs()
 pouipouin_actions = Actions()
 pouipouin_decision_maker = DecisionMaker()
