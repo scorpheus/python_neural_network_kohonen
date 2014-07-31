@@ -58,7 +58,7 @@ class KohonenBehaviour:
 
 		# draw neural network
 		for input in range(self.neural_network.m_NbInput):
-			y = (window.get_height()*0.5) / (self.neural_network.m_NbInput+1) * (input + 1)
+			y = (window.get_height()*0.25) + (window.get_height()*0.25) / (self.neural_network.m_NbInput+1) * (input + 1)
 			min = self.node_inputs.min_max_inputs[input][0]
 			max = self.node_inputs.min_max_inputs[input][1]
 
@@ -79,10 +79,10 @@ class KohonenBehaviour:
 					max = self.node_inputs.min_max_inputs[input_count][1]
 
 					color = self.memory.fragment_array[fragment].associated_action / self.memory.nb_actions * 255
-					pygame_draw.circle(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), 1, 1)
-				pygame_draw.line(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y+20)))
+					# pygame_draw.circle(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), 1, 1)
+					pygame_draw.line(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y+20)))
 
-				input_count += 1
+					input_count += 1
 
 
 
