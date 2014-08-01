@@ -43,10 +43,11 @@ class NodeInputs(BaseNodeInputs):
 
 	def draw(self, pygame_draw, window):
 		integer_pos = Vec2d(int(self.node.pos.x), int(self.node.pos.y))
+		left_dir = Vec2d(self.node.dir)
+		left_dir.rotate(-10.0)
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left + window.get_rect().center)
+
 		right_dir = Vec2d(self.node.dir)
 		right_dir.rotate(10.0)
 		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right + window.get_rect().center)
 
-		left_dir = Vec2d(self.node.dir)
-		left_dir.rotate(-10.0)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left + window.get_rect().center)
