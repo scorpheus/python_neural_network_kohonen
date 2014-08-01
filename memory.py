@@ -27,6 +27,7 @@ class Memory:
 		# init the array for the count of nb fragment per action
 		self.nb_actions = nb_actions
 		self.m_NbFragmentPerActionArray = np.zeros(self.nb_actions)
+		self.m_TabPercentFragmentPerAction = np.zeros(self.nb_actions)
 
 	def GetNbFragmentPerActionArray(self):
 		return self.m_NbFragmentPerActionArray
@@ -40,3 +41,13 @@ class Memory:
 
 		# add the state into the pool
 		self.fragment_array = np.append(self.fragment_array, [_NewState])
+
+		# recheck the percent of fragment per actions
+		self.ComputePercentPerAction()
+
+	def ComputePercentPerAction(self):
+		l_DivNbState = 1/self.GetNbFragment()
+
+		for action in range(self.nb_actions):
+			self.m_TabPercentFragmentPerAction[action] = self.m_NbFragmentPerActionArray[action] * l_DivNbState * 100
+
