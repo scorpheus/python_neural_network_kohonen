@@ -29,7 +29,7 @@ class NodeInputs(BaseNodeInputs):
 
 		return current_fragment
 
-	def update(self):
+	def update(self, physic_world):
 		pressed = pygame.key.get_pressed()
 		if pressed[pygame.K_r]:
 			self.distance_left = 0 if self.distance_left - 0.1 < 0 else self.distance_left - 0.1

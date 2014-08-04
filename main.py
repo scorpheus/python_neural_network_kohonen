@@ -3,6 +3,8 @@ __author__ = 'scorpheus'
 import sys
 from node import Node
 
+from physic_world import PhysicWorld
+
 # from node_1_input_move_backward_stop_forward.node_input_1_input_dist_front import NodeInputs
 # from node_1_input_move_backward_stop_forward.action_3_backward_stop_forward import Actions
 # from node_1_input_move_backward_stop_forward.decision_maker import DecisionMaker
@@ -23,6 +25,8 @@ pouipouin_actions = Actions()
 pouipouin_decision_maker = DecisionMaker()
 pouinpouin = Node(pouipouin_actions, pouipouin_inputs, pouipouin_decision_maker)
 
+physic_world = PhysicWorld(window)
+
 #input handling (somewhat boilerplate code):
 while True:
 	for event in pygame.event.get():
@@ -33,7 +37,9 @@ while True:
 
 	window.fill((0,0,0))
 	pouinpouin.draw(pygame.draw, window)
-	pouinpouin.update()
+	pouinpouin.update(physic_world)
+
+	physic_world.draw(pygame.draw, window)
 
 	#draw it to the screen
 	pygame.display.flip()
