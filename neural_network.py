@@ -5,7 +5,7 @@ import math
 import sys
 
 class NeuralNetwork:
-	nb_neurone = 50
+	nb_neurone = 150
 
 	START_ACTIVATION_AREA = 0.20
 	START_LEARNING_RATE = 0.30

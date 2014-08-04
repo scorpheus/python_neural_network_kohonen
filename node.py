@@ -13,15 +13,16 @@ class Node:
 
 		self.actions = actions
 		self.inputs = inputs
+		self.selected_action = 0
 
 		self.kohonen_behaviour = KohonenBehaviour(self.inputs, self.actions, decision_maker)
 
 	def update(self, physic_world):
 		self.inputs.update(physic_world)
 
-		selected_action = self.kohonen_behaviour.update()
+		self.selected_action = self.kohonen_behaviour.update()
 
-		self.actions.execute_action(selected_action, self)
+		self.actions.execute_action(self.selected_action, self)
 
 	def draw(self, pygame_draw, window):
 		self.inputs.draw(pygame_draw, window)

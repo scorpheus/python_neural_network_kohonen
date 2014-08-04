@@ -30,16 +30,13 @@ class NodeInputs(BaseNodeInputs):
 		return current_fragment
 
 	def update(self, physic_world):
-		pressed = pygame.key.get_pressed()
-		if pressed[pygame.K_r]:
-			self.distance_left = 0 if self.distance_left - 0.1 < 0 else self.distance_left - 0.1
-		elif pressed[pygame.K_t]:
-			self.distance_left = 100 if self.distance_left + 0.1 > 100 else self.distance_left + 0.1
+		left_dir = Vec2d(self.node.dir)
+		left_dir.rotate(-10.0)
+		self.distance_left = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, left_dir)))
 
-		if pressed[pygame.K_f]:
-			self.distance_right = 0 if self.distance_right - 0.1 < 0 else self.distance_right - 0.1
-		elif pressed[pygame.K_g]:
-			self.distance_right = 100 if self.distance_right + 0.1 > 100 else self.distance_right + 0.1
+		right_dir = Vec2d(self.node.dir)
+		right_dir.rotate(10.0)
+		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir)))
 
 	def draw(self, pygame_draw, window):
 		integer_pos = Vec2d(int(self.node.pos.x), int(self.node.pos.y))

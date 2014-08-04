@@ -27,6 +27,9 @@ pouinpouin = Node(pouipouin_actions, pouipouin_inputs, pouipouin_decision_maker)
 
 physic_world = PhysicWorld(window)
 
+# initialize font
+myfont = pygame.font.SysFont("monospace", 15)
+
 #input handling (somewhat boilerplate code):
 while True:
 	for event in pygame.event.get():
@@ -38,6 +41,10 @@ while True:
 	window.fill((0,0,0))
 	pouinpouin.draw(pygame.draw, window)
 	pouinpouin.update(physic_world)
+
+	# render text
+	label = myfont.render(str(pouinpouin.selected_action)+" "+pouipouin_actions.get_current_action_name(pouinpouin.selected_action), 1, (255,255,0))
+	window.blit(label, (10, 100))
 
 	physic_world.draw(pygame.draw, window)
 

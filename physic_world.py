@@ -11,14 +11,13 @@ class RandomSphereList():
 		self.sphere_array = np.array([])
 
 		for id_sphere in range(50):
-			vec = {'x': randint(-window.get_rect().width*0.5, window.get_rect().width*0.5), 'y': randint(-window.get_rect().height*0.5, window.get_rect().height*0.5)}
+			vec = {'x': randint(-window.get_rect().width*0.5, window.get_rect().width*0.5), 'y': randint(-window.get_rect().height*0.5, window.get_rect().height*0.5), 'r': 5}
 			self.sphere_array = np.append(self.sphere_array, [vec])
 
 	def draw(self, pygame_draw, window):
-		radius = 5
 		for pos_sphere in range(self.sphere_array.shape[0]):
 			integer_pos = Vec2d(int(self.sphere_array[pos_sphere]['x']), int(self.sphere_array[pos_sphere]['y']))
-			pygame_draw.circle(window, (255, 255, 255), integer_pos + window.get_rect().center, radius, 1)
+			pygame_draw.circle(window, (255, 255, 255), integer_pos + window.get_rect().center, self.sphere_array[pos_sphere]['r'], 1)
 
 
 class PhysicWorld():
@@ -28,17 +27,22 @@ class PhysicWorld():
 	def draw(self, pygame_draw, window):
 		self.sphere_list.draw(pygame_draw, window)
 
-	def intersection_line_sphere(self, s, d):
-			pass
+	def intersection_line_spheres(self, s, d):
+		min_intersection_d = 1000000
+		for pos_sphere in range(self.sphere_list.sphere_array.shape[0]):
+			temp_d = self.LineIntersectSphere(s, d, Vec2d(self.sphere_list.sphere_array[pos_sphere]['x'], self.sphere_list.sphere_array[pos_sphere]['y']), self.sphere_list.sphere_array[pos_sphere]['r'])
+			if 0 < temp_d < min_intersection_d:
+				min_intersection_d = temp_d
+		return min_intersection_d
 
-	def LineIntersectSphere(self, a, v, c, r, t0, t1):
-		e = c - a
+	def LineIntersectSphere(self, o, d, c, r):
+		e = c - o
 
-		k = e.Dot(v)
-		d = r * r - (e.Len2() - k * k)
-		if d < 0:
+		k = e.dot(d)
+		v = r * r - (e.get_length_sqrd() - k * k)
+		if v < 0:
 			return 1000000
 
-		d = math.sqrt(d)
+		v = math.sqrt(v)
 
-		return k - d
+		return k - v
