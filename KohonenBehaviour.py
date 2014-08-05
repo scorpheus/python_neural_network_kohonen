@@ -39,18 +39,18 @@ class KohonenBehaviour:
 
 		# update the kohonen neural network with the new input
 		#  get the action from the neural network for this fragment
-		selected_action = self.neural_network.Update(current_fragment.input_array, map_neural_network_on_memory)
+		selected_action = int(self.neural_network.Update(current_fragment.input_array, map_neural_network_on_memory))
 
 		# sometime don't listen to the brain and do instinct stupidity
-		if randrange(1000) < 30:
+		if randrange(1000) < 30 or selected_action == -1:
 			selected_action = randrange(self.nb_actions)
 
 		# if the selected action is validate as good by the decision maker, keep in memory
 		if self.decision_maker.is_good_action(current_fragment, selected_action):
 			# add the framgent only it there not too much of this one already in memory
-			if self.memory.m_TabPercentFragmentPerAction[selected_action] < 1/self.nb_actions*100 + 10:
-				current_fragment.associated_action = selected_action
-				self.memory.PushBackState(current_fragment)
+			# if self.memory.m_TabPercentFragmentPerAction[selected_action] < 1/self.nb_actions*100 + 10:
+			current_fragment.associated_action = selected_action
+			self.memory.PushBackState(current_fragment)
 
 		return selected_action
 
@@ -65,7 +65,9 @@ class KohonenBehaviour:
 			for id_neurone in range(self.neural_network.nb_neurone):
 				value_input_neurone = self.neural_network.inputs_array[input][id_neurone]
 
-				color = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions * 255
+				color = 255
+				if self.neural_network.neurone_action_array[id_neurone] != -1:
+					color = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions * 255
 				# pygame_draw.circle(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), 1, 1)
 				pygame_draw.line(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y+20)))
 

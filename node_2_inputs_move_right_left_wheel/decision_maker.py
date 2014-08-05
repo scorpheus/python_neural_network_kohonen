@@ -10,11 +10,6 @@ class DecisionMaker(BaseDecisionMaker):
 	def __init__(self):
 		super().__init__()
 
-	action_left_backward = 0
-	action_left_forward = 1
-	action_right_backward = 2
-	action_right_forward = 3
-
 	def is_good_action(self, fragment, action):
 		if action == 0:
 			return False
@@ -25,7 +20,7 @@ class DecisionMaker(BaseDecisionMaker):
 
 		if fragment.input_array[0] > 20 and fragment.input_array[1] > 20 and (action & Actions.action_right_forward or action & Actions.action_left_forward):
 			return True
-		if fragment.input_array[0] < 20 and fragment.input_array[1] < 20 and (action == Actions.action_right_backward or action & Actions.action_left_backward):
+		if fragment.input_array[0] < 20 and fragment.input_array[1] < 20 and (action & Actions.action_right_backward or action & Actions.action_left_backward):
 			return True
 		if fragment.input_array[0] < 20 < fragment.input_array[1] and (action & Actions.action_right_backward or action & Actions.action_left_forward):
 			return True

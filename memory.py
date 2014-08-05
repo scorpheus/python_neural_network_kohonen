@@ -35,12 +35,22 @@ class Memory:
 	def GetNbFragment(self):
 		return self.fragment_array.size
 
-	def PushBackState(self, _NewState):
+	def FragmentAlreadyInside(self, fragment):
+		for id_frag in range(self.fragment_array.shape[0]):
+			frag = self.fragment_array[id_frag]
+			if np.array_equal(frag.input_array, fragment.input_array) and frag.associated_action == fragment.associated_action:
+				return True
+		return False
+
+	def PushBackState(self, _NewFragment):
+		if self.FragmentAlreadyInside(_NewFragment):
+			return
+
 		# increase the count of state per action
-		self.m_NbFragmentPerActionArray[_NewState.associated_action] += 1
+		self.m_NbFragmentPerActionArray[_NewFragment.associated_action] += 1
 
 		# add the state into the pool
-		self.fragment_array = np.append(self.fragment_array, [_NewState])
+		self.fragment_array = np.append(self.fragment_array, [_NewFragment])
 
 		# recheck the percent of fragment per actions
 		self.ComputePercentPerAction()

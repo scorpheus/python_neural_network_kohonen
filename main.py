@@ -29,6 +29,7 @@ physic_world = PhysicWorld(window)
 
 # initialize font
 myfont = pygame.font.SysFont("monospace", 15)
+clock = pygame.time.Clock()
 
 #input handling (somewhat boilerplate code):
 while True:
@@ -45,6 +46,9 @@ while True:
 	# render text
 	label = myfont.render(str(pouinpouin.selected_action)+" "+pouipouin_actions.get_current_action_name(pouinpouin.selected_action), 1, (255,255,0))
 	window.blit(label, (10, 100))
+	clock.tick()
+	label = myfont.render("fps: "+str(int(clock.get_fps())), 1, (255,255,0))
+	window.blit(label, (10, 50))
 
 	physic_world.draw(pygame.draw, window)
 

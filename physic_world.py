@@ -10,7 +10,7 @@ class RandomSphereList():
 	def __init__(self, window):
 		self.sphere_array = np.array([])
 
-		for id_sphere in range(50):
+		for id_sphere in range(150):
 			vec = {'x': randint(-window.get_rect().width*0.5, window.get_rect().width*0.5), 'y': randint(-window.get_rect().height*0.5, window.get_rect().height*0.5), 'r': 5}
 			self.sphere_array = np.append(self.sphere_array, [vec])
 

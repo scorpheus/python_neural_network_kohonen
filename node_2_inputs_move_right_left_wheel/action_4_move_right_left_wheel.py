@@ -24,11 +24,11 @@ class Actions(BaseActions):
 		if id_action & self.action_left_backward:
 			name += "left backward"
 		if id_action & self.action_left_forward:
-			name += "left forward"
+			name += ", left forward"
 		if id_action & self.action_right_backward:
-			name += "right backward"
+			name += ", right backward"
 		if id_action & self.action_right_forward:
-			name += "right forward"
+			name += ", right forward"
 		return name
 
 	def execute_action(self, action_type, node):

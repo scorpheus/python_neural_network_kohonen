@@ -23,7 +23,8 @@ class NeuralNetwork:
 
 		# create the neuronal arrays
 		# for the action labelled per neurone
-		self.neurone_action_array = np.random.randint(nb_actions, size=self.nb_neurone)
+		self.neurone_action_array = np.empty(self.nb_neurone)
+		self.neurone_action_array.fill(-1)
 
 		# array of m_NbInput for each input, containing each input range value
 		self.inputs_array = [np.random.random_sample(self.nb_neurone) * (inputs.min_max_inputs[input][1]-inputs.min_max_inputs[input][0]) + inputs.min_max_inputs[input][0] for input in range(self.m_NbInput)]
