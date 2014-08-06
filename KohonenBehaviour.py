@@ -48,9 +48,9 @@ class KohonenBehaviour:
 		# if the selected action is validate as good by the decision maker, keep in memory
 		if self.decision_maker.is_good_action(current_fragment, selected_action):
 			# add the framgent only it there not too much of this one already in memory
-			# if self.memory.m_TabPercentFragmentPerAction[selected_action] < 1/self.nb_actions*100 + 10:
-			current_fragment.associated_action = selected_action
-			self.memory.PushBackState(current_fragment)
+			if self.memory.m_TabPercentFragmentPerAction[selected_action] < 1/self.nb_actions*100 + 30:
+				current_fragment.associated_action = selected_action
+				self.memory.PushBackState(current_fragment)
 
 		return selected_action
 
