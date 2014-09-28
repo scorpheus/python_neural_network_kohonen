@@ -31,10 +31,10 @@ class SimpleVec2D():
 		return float(self.x*other.x + self.y*other.y)
 
 	def get_distance(self, other):
-		return math.sqrt((self.x - other.y)**2 + (self.y - other.y)**2)
+		return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
 	def get_dist_sqrd(self, other):
-		return (self.x - other.y)**2 + (self.y - other.y)**2
+		return (self.x - other.x)**2 + (self.y - other.y)**2
 
 	# Addition
 	def __add__(self, other):

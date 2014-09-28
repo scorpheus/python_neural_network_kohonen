@@ -3,7 +3,6 @@ __author__ = 'scorpheus'
 from node_inputs import BaseNodeInputs
 from memory import Fragment
 import copy
-from Vec2D import Vec2d
 from simple_vec2d import SimpleVec2D
 
 

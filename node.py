@@ -22,7 +22,10 @@ class Node:
 
 		self.selected_action = self.kohonen_behaviour.update()
 
-		self.actions.execute_action(self.selected_action, self)
+		new_pos = self.actions.execute_action(self.selected_action, self)
+		#check no intersection with physic word
+		if not physic_world.in_collision_with_spheres(new_pos, 5):
+			self.pos = new_pos
 
 	def draw(self, pygame_draw, window):
 		self.inputs.draw(pygame_draw, window)

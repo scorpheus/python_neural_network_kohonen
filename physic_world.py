@@ -11,7 +11,7 @@ class RandomSphereList():
 		self.sphere_array = np.array([])
 
 		for id_sphere in range(150):
-			vec = {'x': randint(-window.get_rect().width*0.5, window.get_rect().width*0.5), 'y': randint(-window.get_rect().height*0.5, window.get_rect().height*0.5), 'r': 5}
+			vec = {'x': randint(-window.get_rect().width*0.5, window.get_rect().width*0.5), 'y': randint(-window.get_rect().height*0.5, window.get_rect().height*0.5), 'r': 15}
 			vec.update({'d_pos': (int(vec['x'])+window.get_rect().center[0], int(vec['y'])+window.get_rect().center[1])})
 			self.sphere_array = np.append(self.sphere_array, [vec])
 
@@ -26,6 +26,17 @@ class PhysicWorld():
 
 	def draw(self, pygame_draw, window):
 		self.sphere_list.draw(pygame_draw, window)
+
+	def in_collision_with_spheres(self, pos, r):
+		max_dist_check = r**2
+		temp_vec = SimpleVec2D(0, 0)
+		for pos_sphere in range(self.sphere_list.sphere_array.shape[0]):
+			sphere = self.sphere_list.sphere_array[pos_sphere]
+			temp_vec.x = sphere['x']
+			temp_vec.y = sphere['y']
+			if temp_vec.get_dist_sqrd(pos) <= max_dist_check+sphere['r']**2:
+				return True
+		return False
 
 	def intersection_line_spheres(self, s, d, max_dist):
 		min_intersection_d = 1000000

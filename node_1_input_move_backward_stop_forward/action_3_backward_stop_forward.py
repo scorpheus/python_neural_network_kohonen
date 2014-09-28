@@ -2,6 +2,7 @@ __author__ = 'scorpheus'
 
 # contain the actions the node can do
 from actions import BaseActions
+import copy
 
 
 class Actions(BaseActions):
@@ -25,10 +26,12 @@ class Actions(BaseActions):
 		return name
 
 	def execute_action(self, action_type, node):
+		new_pos = copy.copy(node.pos)
 		if action_type == self.action_backward:
-			node.pos -= node.dir *1.0
+			new_pos -= node.dir *1.0
 		elif action_type == self.action_stop:
 			pass
 		elif action_type == self.action_forward:
-			node.pos += node.dir *1.0
+			new_pos += node.dir *1.0
 
+		return new_pos

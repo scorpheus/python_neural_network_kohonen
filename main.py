@@ -1,8 +1,5 @@
 __author__ = 'scorpheus'
 
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
-
 import sys
 from node import Node
 
@@ -59,11 +56,5 @@ def play_simulation():
 		#draw it to the screen
 		pygame.display.flip()
 
-if True:
-	graphviz = GraphvizOutput()
-	graphviz.output_file = 'basic.png'
-
-	with PyCallGraph(output=graphviz):
-		play_simulation()
-else:
+if __name__ == "__main__":
 	play_simulation()
