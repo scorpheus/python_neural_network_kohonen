@@ -55,12 +55,16 @@ class KohonenBehaviour:
 		return selected_action
 
 	def draw(self, pygame_draw, window):
+		# return
+		window_height = window.get_height()
+		window_width = window.get_width()
 
 		# draw neural network
 		for input in range(self.neural_network.m_NbInput):
-			y = (window.get_height()*0.25) + (window.get_height()*0.25) / (self.neural_network.m_NbInput+1) * (input + 1)
-			min = self.node_inputs.min_max_inputs[input][0]
-			max = self.node_inputs.min_max_inputs[input][1]
+			y = (window_height*0.25) + (window_height*0.25) / (self.neural_network.m_NbInput+1) * (input + 1)
+			val_input = self.node_inputs.min_max_inputs[input]
+			min = val_input[0]
+			max = val_input[1]
 
 			for id_neurone in range(self.neural_network.nb_neurone):
 				value_input_neurone = self.neural_network.inputs_array[input][id_neurone]
@@ -68,21 +72,21 @@ class KohonenBehaviour:
 				color = 255
 				if self.neural_network.neurone_action_array[id_neurone] != -1:
 					color = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions * 255
-				# pygame_draw.circle(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), 1, 1)
-				pygame_draw.line(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y+20)))
-
+				range_value_input = int(range_adjust(value_input_neurone, min, max, 0, window_width))
+				pygame_draw.line(window, (color, color, 255), (range_value_input, int(y)), (range_value_input, int(y+20)))
+		return
 		# draw memory
 		if self.memory.fragment_array.shape[0] != 0:
 			for fragment in range(self.memory.fragment_array.shape[0]):
 				input_count = 0
 				for value_input_neurone in np.nditer(self.memory.fragment_array[fragment].input_array):
-					y = (window.get_height()*0.25) / (self.neural_network.m_NbInput+1) * (input_count + 1)
+					y = (window_height*0.25) / (self.neural_network.m_NbInput+1) * (input_count + 1)
 					min = self.node_inputs.min_max_inputs[input_count][0]
 					max = self.node_inputs.min_max_inputs[input_count][1]
 
 					color = self.memory.fragment_array[fragment].associated_action / self.memory.nb_actions * 255
 					# pygame_draw.circle(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), 1, 1)
-					pygame_draw.line(window, (color, color, 255), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y)), Vec2d(int(range_adjust(value_input_neurone, min, max, 0, window.get_width())), int(y+20)))
+					pygame_draw.line(window, (color, color, 255), (int(range_adjust(value_input_neurone, min, max, 0, window_width)), int(y)), (int(range_adjust(value_input_neurone, min, max, 0, window_width)), int(y+20)))
 
 					input_count += 1
 

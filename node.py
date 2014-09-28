@@ -1,6 +1,6 @@
 __author__ = 'scorpheus'
 
-from Vec2D import Vec2d
+from simple_vec2d import SimpleVec2D
 from KohonenBehaviour import KohonenBehaviour
 
 
@@ -8,8 +8,8 @@ class Node:
 	def __init__(self, actions, inputs, decision_maker):
 		inputs.set_node(self)
 
-		self.pos = Vec2d(0, 0)
-		self.dir = Vec2d(1, 0)
+		self.pos = SimpleVec2D(0, 0)
+		self.dir = SimpleVec2D(1, 0)
 
 		self.actions = actions
 		self.inputs = inputs
@@ -29,15 +29,17 @@ class Node:
 		self.kohonen_behaviour.draw(pygame_draw, window)
 
 		radius = 5
-		integer_pos = Vec2d(int(self.pos.x), int(self.pos.y))
-		pygame_draw.circle(window, (255, 255, 255), integer_pos + window.get_rect().center, radius, 1)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + self.dir*radius + window.get_rect().center)
+		integer_pos = SimpleVec2D(int(self.pos.x), int(self.pos.y))
+		pos = integer_pos + window.get_rect().center
+		pos2 = integer_pos + self.dir*radius + window.get_rect().center
+		pygame_draw.circle(window, (255, 255, 255), pos, radius, 1)
+		pygame_draw.line(window, (255, 255, 255), pos, pos2)
 
-		if integer_pos.x > window.get_rect().width*0.5:
+		if self.pos.x > window.get_rect().width*0.5:
 			self.pos.x = window.get_rect().width*0.5
-		elif integer_pos.x < -window.get_rect().width*0.5:
+		elif self.pos.x < -window.get_rect().width*0.5:
 			self.pos.x = -window.get_rect().width*0.5
-		elif integer_pos.y > window.get_rect().height*0.5:
+		elif self.pos.y > window.get_rect().height*0.5:
 			self.pos.y = window.get_rect().height*0.5
-		elif integer_pos.y < -window.get_rect().height*0.5:
+		elif self.pos.y < -window.get_rect().height*0.5:
 			self.pos.y = -window.get_rect().height*0.5

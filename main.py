@@ -1,5 +1,8 @@
 __author__ = 'scorpheus'
 
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
+
 import sys
 from node import Node
 
@@ -20,10 +23,10 @@ pygame.init()
 
 #create the screen
 window = pygame.display.set_mode((640, 480))
-pouipouin_inputs = NodeInputs()
-pouipouin_actions = Actions()
-pouipouin_decision_maker = DecisionMaker()
-pouinpouin = Node(pouipouin_actions, pouipouin_inputs, pouipouin_decision_maker)
+perso_inputs = NodeInputs()
+perso_actions = Actions()
+perso_decision_maker = DecisionMaker()
+perso = Node(perso_actions, perso_inputs, perso_decision_maker)
 
 physic_world = PhysicWorld(window)
 
@@ -32,25 +35,35 @@ myfont = pygame.font.SysFont("monospace", 15)
 clock = pygame.time.Clock()
 
 #input handling (somewhat boilerplate code):
-while True:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			sys.exit(0)
-		# else:
-		# 	print(event)
+def play_simulation():
+	while True:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit(0)
+			# else:
+			# 	print(event)
 
-	window.fill((0,0,0))
-	pouinpouin.draw(pygame.draw, window)
-	pouinpouin.update(physic_world)
+		window.fill((0,0,0))
+		perso.draw(pygame.draw, window)
+		perso.update(physic_world)
 
-	# render text
-	label = myfont.render(str(pouinpouin.selected_action)+" "+pouipouin_actions.get_current_action_name(pouinpouin.selected_action), 1, (255,255,0))
-	window.blit(label, (10, 100))
-	clock.tick()
-	label = myfont.render("fps: "+str(int(clock.get_fps())), 1, (255,255,0))
-	window.blit(label, (10, 50))
+		# render text
+		label = myfont.render(str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), 1, (255,255,0))
+		window.blit(label, (10, 100))
+		clock.tick()
+		label = myfont.render("fps: "+str(int(clock.get_fps())), 1, (255,255,0))
+		window.blit(label, (10, 50))
 
-	physic_world.draw(pygame.draw, window)
+		physic_world.draw(pygame.draw, window)
 
-	#draw it to the screen
-	pygame.display.flip()
+		#draw it to the screen
+		pygame.display.flip()
+
+if True:
+	graphviz = GraphvizOutput()
+	graphviz.output_file = 'basic.png'
+
+	with PyCallGraph(output=graphviz):
+		play_simulation()
+else:
+	play_simulation()

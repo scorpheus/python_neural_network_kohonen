@@ -2,8 +2,9 @@ __author__ = 'scorpheus'
 
 from node_inputs import BaseNodeInputs
 from memory import Fragment
-import pygame
+import copy
 from Vec2D import Vec2d
+from simple_vec2d import SimpleVec2D
 
 
 class NodeInputs(BaseNodeInputs):
@@ -30,21 +31,21 @@ class NodeInputs(BaseNodeInputs):
 		return current_fragment
 
 	def update(self, physic_world):
-		left_dir = Vec2d(self.node.dir)
+		left_dir = copy.copy(self.node.dir)
 		left_dir.rotate(-10.0)
-		self.distance_left = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, left_dir)))
+		self.distance_left = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, left_dir, 100)))
 
-		right_dir = Vec2d(self.node.dir)
+		right_dir = copy.copy(self.node.dir)
 		right_dir.rotate(10.0)
-		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir)))
+		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir, 100)))
 
 	def draw(self, pygame_draw, window):
-		integer_pos = Vec2d(int(self.node.pos.x), int(self.node.pos.y))
-		left_dir = Vec2d(self.node.dir)
+		integer_pos = SimpleVec2D(int(self.node.pos.x), int(self.node.pos.y))
+		left_dir = copy.copy(self.node.dir)
 		left_dir.rotate(-10.0)
 		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left + window.get_rect().center)
 
-		right_dir = Vec2d(self.node.dir)
+		right_dir = copy.copy(self.node.dir)
 		right_dir.rotate(10.0)
 		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right + window.get_rect().center)
 

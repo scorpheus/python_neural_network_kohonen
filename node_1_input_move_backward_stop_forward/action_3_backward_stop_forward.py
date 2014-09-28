@@ -12,12 +12,23 @@ class Actions(BaseActions):
 
 	def __init__(self):
 		super().__init__(3)
+		self.action_names = ["backward", "stop", "forward"]
+
+	def get_current_action_name(self, id_action):
+		name = ""
+		if id_action == self.action_backward:
+			name += "backward"
+		if id_action & self.action_stop:
+			name += ", stop"
+		if id_action & self.action_forward:
+			name += ", backward"
+		return name
 
 	def execute_action(self, action_type, node):
 		if action_type == self.action_backward:
-			node.pos -= node.dir *0.1
+			node.pos -= node.dir *1.0
 		elif action_type == self.action_stop:
 			pass
 		elif action_type == self.action_forward:
-			node.pos += node.dir *0.1
+			node.pos += node.dir *1.0
 
