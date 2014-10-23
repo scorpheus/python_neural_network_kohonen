@@ -27,11 +27,18 @@ class NeuralNetwork:
 		self.neurone_action_array.fill(-1)
 
 		# array of m_NbInput for each input, containing each input range value
-		self.inputs_array = [np.random.random_sample(self.nb_neurone) * (inputs.min_max_inputs[input][1]-inputs.min_max_inputs[input][0]) + inputs.min_max_inputs[input][0] for input in range(self.m_NbInput)]
+		self.inputs_array = np.array([np.random.random_sample(self.nb_neurone) * (inputs.min_max_inputs[input][1]-inputs.min_max_inputs[input][0]) + inputs.min_max_inputs[input][0] for input in range(self.m_NbInput)])
 
 		# contain max weight for each input
 		self.m_MaxWeightInputsArray = np.ones(self.m_NbInput)
-	
+
+	def MessedUpNeuroneInputs(self, inputs):
+		# each input are rearrange in random position per neurone
+		self.inputs_array = np.array([np.random.random_sample(self.nb_neurone) * (inputs.min_max_inputs[input][1]-inputs.min_max_inputs[input][0]) + inputs.min_max_inputs[input][0] for input in range(self.m_NbInput)])
+
+		self.g_ActivationArea = self.START_ACTIVATION_AREA
+		self.g_LearningRate = self.START_LEARNING_RATE
+
 	def Update(self, _InputArray, _map_neural_network_to_memory):
 	
 		self.g_ActivationArea -= 0.0005
@@ -129,105 +136,79 @@ class NeuralNetwork:
 	
 		# array for the number of each action, because if one action have 100 inputs and another one just 2 inputs, it's unfair and the count is false
 		l_MemoryNbFragmentPerAction = self.m_MemoryGoodAction.GetNbFragmentPerActionArray()
-		l_ArrayNbFragmentsPerAction = np.zeros(self.m_MemoryGoodAction.nb_actions)
-	
-		for action in range(self.m_MemoryGoodAction.nb_actions):
-			if l_MemoryNbFragmentPerAction[action] != 0:
-				l_ArrayNbFragmentsPerAction[action] = 1.0/l_MemoryNbFragmentPerAction[action]
+
+		l_ArrayNbFragmentsPerAction = 1.0/l_MemoryNbFragmentPerAction
+		l_ArrayNbFragmentsPerAction[l_ArrayNbFragmentsPerAction == np.inf] = 0
 
 		l_UpdateTheMaxWeightArray = True
-	
+
+
+		# # find the winner for this input
+		l_id_neurone_winner = self.FindTheWinner(self.m_MemoryGoodAction.fragments_inputs_array, l_UpdateTheMaxWeightArray)
+
+		# add this score to the neighbors
+		# weight link for the winner for each fragment
+		l_WeightLinkValueWinner = np.swapaxes(self.inputs_array[:, l_id_neurone_winner], 0, 1) / self.m_MaxWeightInputsArray[:, :]
+		l_WeightLinkValue = self.inputs_array[np.newaxis, :, :] / self.m_MaxWeightInputsArray[:, :, np.newaxis]
+
+		l_SumDistance = ((l_WeightLinkValueWinner[:, :, np.newaxis] - l_WeightLinkValue)**2).sum(axis=1)
+
+		# for each neurons and for this particular good action, add the score by the formula
+		count = 0
+		for associated_action in self.m_MemoryGoodAction.fragments_associated_action_array:
+			# for each neurons and for this particular good action, add the score by the formula
+			l_save_action_score_per_neuron[:, associated_action] += np.exp((-(l_SumDistance[count])*l_DivActivationArea)*self.g_LearningRate) * l_ArrayNbFragmentsPerAction[associated_action]
+			count += 1
+
+		# update the max weight array only once, just for the first loop
+		l_UpdateTheMaxWeightArray = False
+
+
 		# for all good state
-		for id_fragment in range(l_nb_fragment):
-			# find the input for each state
-			l_current_fragment = l_fragment_array[id_fragment]
-			
-			# the action associate to this input
-			l_GoodAction = l_current_fragment.associated_action
-	
-			#take the array of input from this state
-			l_TempInputFragment = l_current_fragment.input_array
-	
-			# find the winner for this input
-			l_id_neurone_winner = self.FindTheWinner(l_TempInputFragment, l_UpdateTheMaxWeightArray)
-
-			# add this score to the neighbors
-			for id_neurone in range(self.nb_neurone):
-
-				l_SumDistance = 0
-
-				# find the distance from the winner
-				for input in range(self.m_NbInput):
-					# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-					l_WeightLinkValueWinner = self.inputs_array[input][l_id_neurone_winner] / self.m_MaxWeightInputsArray[input]
-					l_WeightLinkValue = self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
-	
-					l_SumDistance += (l_WeightLinkValueWinner - l_WeightLinkValue) * (l_WeightLinkValueWinner - l_WeightLinkValue)
-
-				l_save_action_score_per_neuron[id_neurone][l_GoodAction] += math.exp((-(l_SumDistance)*l_DivActivationArea)*self.g_LearningRate) * l_ArrayNbFragmentsPerAction[l_GoodAction]
-	
-			# update the max weight array only once, just for the first loop
-			l_UpdateTheMaxWeightArray = False
+		# for l_current_fragment in l_fragment_array:
+		#
+		# 	# the action associate to this input
+		# 	l_GoodAction = l_current_fragment.associated_action
+		#
+		# 	#take the array of input from this state
+		# 	l_TempInputFragment = l_current_fragment.input_array
+		#
+		# 	# find the winner for this input
+		# 	l_id_neurone_winner = self.FindTheWinner(l_TempInputFragment, l_UpdateTheMaxWeightArray)
+		#
+		# 	# add this score to the neighbors
+		# 	l_WeightLinkValueWinner = self.inputs_array[:, l_id_neurone_winner] / self.m_MaxWeightInputsArray
+		# 	l_WeightLinkValue = self.inputs_array / self.m_MaxWeightInputsArray[:,  np.newaxis]
+		#
+		# 	l_SumDistance = ((l_WeightLinkValueWinner[:, np.newaxis] - l_WeightLinkValue)**2).sum(axis=0)
+		#
+		# 	# for each neurons and for this particular good action, add the score by the formula
+		# 	l_save_action_score_per_neuron[:, l_GoodAction] += np.exp((-(l_SumDistance)*l_DivActivationArea)*self.g_LearningRate) * l_ArrayNbFragmentsPerAction[l_GoodAction]
+		#
+		# 	# update the max weight array only once, just for the first loop
+		# 	l_UpdateTheMaxWeightArray = False
 
 		# add to each neurone, the action associate to it
-		for id_neurone in range(self.nb_neurone):
-			l_MaxScore = 0
-			l_SelectedAction = 0
-	
-			for action in range(self.m_MemoryGoodAction.nb_actions):
-				if l_MaxScore < l_save_action_score_per_neuron[id_neurone][action]:
-					l_SelectedAction = action
-					l_MaxScore = l_save_action_score_per_neuron[id_neurone][action]
-
-			# put to the node the associate action
-			self.neurone_action_array[id_neurone] = l_SelectedAction
+		# put to the node the associate action
+		self.neurone_action_array = np.argmax(l_save_action_score_per_neuron, axis=1)
 
 	def FindTheWinner(self, _InputArray, _UpdateTheMaxWeightArray):
 		# for each neurone, compute the output from the input 
 		# and find which one is the winner, with the less output value;
 
 		if _UpdateTheMaxWeightArray:
-			# put the max at the minimum
-			self.m_MaxWeightInputsArray = np.ones(self.m_NbInput)
-	
-			# find the max weight for each neurone to after use it to make all the weight at the same level of power
-			for id_neurone in range(self.nb_neurone):
-				for input in range(self.m_NbInput):
-					# For this neurone, check his weight to be the maximum
-					l_WeightLinkValue = math.fabs(self.inputs_array[input][id_neurone])
-	
-					# check if it's the Max
-					if l_WeightLinkValue > self.m_MaxWeightInputsArray[input]:
-						self.m_MaxWeightInputsArray[input] = l_WeightLinkValue
-
-			# check the max for the input
-			for input in range(self.m_NbInput):
-				# For this neurone, check his weight to be the maximum
-				l_WeightLinkValue = math.fabs(_InputArray[input])
-
-				# check if it's the Max
-				if l_WeightLinkValue > self.m_MaxWeightInputsArray[input]:
-					self.m_MaxWeightInputsArray[input] = l_WeightLinkValue
+			# find the max weight for each neurone to use it to make all the weight at the same level of power
+			#find the max in the inputs array and max from the _InputArray
+			self.m_MaxWeightInputsArray = np.maximum(np.amax(np.absolute(self.inputs_array), axis=1), np.absolute(_InputArray))
 
 		# find the winner neurone
-		l_MaxValue = sys.float_info.max
-		l_CurrentWinner = 0
+		l_InputValue = _InputArray / self.m_MaxWeightInputsArray
+		if len(_InputArray.shape) > 1:
+			l_WeightLinkValue = self.inputs_array[np.newaxis, :] / self.m_MaxWeightInputsArray[:, :, np.newaxis]
+			l_CurrentWinner = ((l_InputValue[:,:, np.newaxis] - l_WeightLinkValue)**2).sum(axis=1).argmin(axis=1)
+		else:
+			l_WeightLinkValue = self.inputs_array / self.m_MaxWeightInputsArray[:,  np.newaxis]
+			l_CurrentWinner = ((l_InputValue[:, np.newaxis] - l_WeightLinkValue)**2).sum(axis=0).argmin()
 
-		for id_neurone in range(self.nb_neurone):
-			l_Sum = 0
-
-			for input in range(self.m_NbInput):
-
-				# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-				l_InputValue = _InputArray[input] / self.m_MaxWeightInputsArray[input]
-				l_WeightLinkValue = self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
-	
-				l_Sum += (l_InputValue - l_WeightLinkValue) * (l_InputValue - l_WeightLinkValue)
-
-			# check if it's the winner
-			if l_Sum <= l_MaxValue:
-				l_MaxValue = l_Sum
-				l_CurrentWinner = id_neurone
-	
 		return l_CurrentWinner
 

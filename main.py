@@ -45,6 +45,15 @@ def play_simulation():
 		perso.update(physic_world)
 
 		# render text
+		label = myfont.render('Frag in Mem: %d' % perso.kohonen_behaviour.memory.GetNbFragment(), 1, (255, 255, 0))
+
+		pressed = pygame.key.get_pressed()
+		if pressed[pygame.K_l]:
+			window.blit(label, (10, 120))
+			for action in range(perso_actions.nb_actions):
+				label = myfont.render('Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), 1, (255, 255, 0))
+				window.blit(label, (10, 140 + 20*action))
+
 		label = myfont.render(str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), 1, (255,255,0))
 		window.blit(label, (10, 100))
 		clock.tick()

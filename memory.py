@@ -21,8 +21,11 @@ class Fragment:
 
 class Memory:
 
-	def __init__(self, nb_actions):
+	def __init__(self, nb_actions, nb_inputs):
 		self.fragment_array = np.array([])
+
+		self.fragments_inputs_array = np.empty((0, nb_inputs))
+		self.fragments_associated_action_array = np.array([])
 
 		# init the array for the count of nb fragment per action
 		self.nb_actions = nb_actions
@@ -35,12 +38,19 @@ class Memory:
 	def GetNbFragment(self):
 		return self.fragment_array.size
 
+	def GetFragmentInputs(self, id_fragment):
+		return self.fragments_inputs_array[id_fragment]
+
+	def GetFragmentAssociatedAction(self, id_fragment):
+		return self.fragments_associated_action_array[id_fragment]
+
 	def FragmentAlreadyInside(self, fragment):
-		for id_frag in range(self.fragment_array.shape[0]):
-			frag = self.fragment_array[id_frag]
-			if np.array_equal(frag.input_array, fragment.input_array) and frag.associated_action == fragment.associated_action:
-				return True
-		return False
+		return np.any(self.fragments_associated_action_array[np.where(np.equal(self.fragments_inputs_array, fragment.input_array).all(1))] == fragment.associated_action)
+		# for id_frag in range(self.fragment_array.shape[0]):
+		# 	frag = self.fragment_array[id_frag]
+		# 	if np.array_equal(frag.input_array, fragment.input_array) and frag.associated_action == fragment.associated_action:
+		# 		return True
+		# return False
 
 	def PushBackState(self, _NewFragment):
 		if self.FragmentAlreadyInside(_NewFragment):
@@ -52,12 +62,14 @@ class Memory:
 		# add the state into the pool
 		self.fragment_array = np.append(self.fragment_array, [_NewFragment])
 
+		self.fragments_inputs_array = np.vstack((self.fragments_inputs_array, _NewFragment.input_array))
+		self.fragments_associated_action_array = np.append(self.fragments_associated_action_array, [_NewFragment.associated_action])
+
 		# recheck the percent of fragment per actions
 		self.ComputePercentPerAction()
 
 	def ComputePercentPerAction(self):
 		l_DivNbState = 1/self.GetNbFragment()
 
-		for action in range(self.nb_actions):
-			self.m_TabPercentFragmentPerAction[action] = self.m_NbFragmentPerActionArray[action] * l_DivNbState * 100
+		self.m_TabPercentFragmentPerAction = self.m_NbFragmentPerActionArray * l_DivNbState * 100
 

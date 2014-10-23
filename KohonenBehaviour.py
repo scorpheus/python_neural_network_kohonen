@@ -18,16 +18,24 @@ class KohonenBehaviour:
 		self.decision_maker = decision_maker
 		self.nb_actions = actions.nb_actions
 
-		self.memory = Memory(actions.nb_actions)
+		self.memory = Memory(actions.nb_actions, node_inputs.nb_inputs)
 
 		self.neural_network = NeuralNetwork(self.node_inputs, actions.nb_actions, self.memory)
 
+		self.last_messed_up_nb_fragment_in_memory = 0
+
 	def update(self):
+		pressed = pygame.key.get_pressed()
+		if pressed[pygame.K_m] or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 200:
+			self.last_messed_up_nb_fragment_in_memory = self.memory.GetNbFragment()
+			self.neural_network.MessedUpNeuroneInputs(self.node_inputs)
+
 		map_neural_network_on_memory = True
 		if False:    # training
 			pass
 		else:
-			if randrange(100) < 3 and self.memory.GetNbFragment() > 0: # get a value from the memory to train de map, this is a test for the moment TODO
+			if randrange(100) < 30 and self.memory.GetNbFragment() > 0: # get a value from the memory to train de map, this is a test for the moment TODO
+				# print('random fragment: '+str(randrange(self.memory.GetNbFragment())))
 				current_fragment = self.memory.fragment_array[randrange(self.memory.GetNbFragment())]
 			else:
 				current_fragment = self.node_inputs.GetCurrentNodeFragment()
@@ -60,11 +68,13 @@ class KohonenBehaviour:
 			return
 
 		window_height = window.get_height()
-		window_width = window.get_width()
+		window_width = window.get_width()-10
 
 		# draw neural network
+		previous_point = np.empty((self.neural_network.nb_neurone))
+		y_part = (window_height*0.25) / (self.neural_network.m_NbInput+1)
 		for input in range(self.neural_network.m_NbInput):
-			y = (window_height*0.25) + (window_height*0.25) / (self.neural_network.m_NbInput+1) * (input + 1)
+			y = (window_height*0.25) + y_part * (input + 1)
 			val_input = self.node_inputs.min_max_inputs[input]
 			min = val_input[0]
 			max = val_input[1]
@@ -75,8 +85,13 @@ class KohonenBehaviour:
 				color = 255
 				if self.neural_network.neurone_action_array[id_neurone] != -1:
 					color = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions * 255
-				range_value_input = int(range_adjust(value_input_neurone, min, max, 0, window_width))
+				range_value_input = int(range_adjust(value_input_neurone, min, max, 10, window_width))
 				pygame_draw.line(window, (color, color, 255), (range_value_input, int(y)), (range_value_input, int(y+20)))
+
+				if input != 0:
+					pygame_draw.line(window, (color, color, 255), (previous_point[id_neurone], int(y-y_part+20)), (range_value_input, int(y)))
+				previous_point[id_neurone] = range_value_input
+
 		# return
 
 		# draw memory
@@ -91,7 +106,7 @@ class KohonenBehaviour:
 					min = val_input[0]
 					max = val_input[1]
 
-					range_value_int = int(range_adjust(value_input_neurone, min, max, 0, window_width))
+					range_value_int = int(range_adjust(value_input_neurone, min, max, 10, window_width))
 					pygame_draw.line(window, (color, color, 255), (range_value_int, int(y)), (range_value_int, int(y+20)))
 
 					input_count += 1
