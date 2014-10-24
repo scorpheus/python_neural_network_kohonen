@@ -26,4 +26,9 @@ class DecisionMaker(BaseDecisionMaker):
 			return True
 		if fragment.input_array[0] > 20 > fragment.input_array[1] and (action & Actions.action_right_forward or action & Actions.action_left_backward):
 			return True
+
+
+		if fragment.input_array[2] <= 10 and (action & Actions.action_right_forward and action & Actions.action_left_forward):
+			return True
+
 		return False

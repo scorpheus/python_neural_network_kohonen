@@ -26,7 +26,7 @@ class KohonenBehaviour:
 
 	def update(self):
 		pressed = pygame.key.get_pressed()
-		if pressed[pygame.K_m] or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 200:
+		if pressed[pygame.K_m] or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 1500:
 			self.last_messed_up_nb_fragment_in_memory = self.memory.GetNbFragment()
 			self.neural_network.MessedUpNeuroneInputs(self.node_inputs)
 

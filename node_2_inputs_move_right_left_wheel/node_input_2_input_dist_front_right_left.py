@@ -9,16 +9,19 @@ from simple_vec2d import SimpleVec2D
 class NodeInputs(BaseNodeInputs):
 
 	def __init__(self):
-		super().__init__(2)
+		super().__init__(3)
 
 		# set the min max for the two input
 		self.min_max_inputs[0][0] = 0
-		self.min_max_inputs[0][1] = 100
+		self.min_max_inputs[0][1] = 10
 		self.min_max_inputs[1][0] = 0
-		self.min_max_inputs[1][1] = 100
+		self.min_max_inputs[1][1] = 10
+		self.min_max_inputs[2][0] = 0
+		self.min_max_inputs[2][1] = 5
 
-		self.distance_left = 50
-		self.distance_right = 50
+		self.distance_left = 5
+		self.distance_right = 5
+		self.distance_back = 2
 
 	def GetCurrentNodeFragment(self):
 		current_fragment = Fragment(self.nb_inputs)
@@ -26,6 +29,7 @@ class NodeInputs(BaseNodeInputs):
 		# fill the fragment with the inputs from the node
 		current_fragment.input_array[0] = self.distance_left
 		current_fragment.input_array[1] = self.distance_right
+		current_fragment.input_array[2] = self.distance_back
 
 		return current_fragment
 
@@ -38,13 +42,25 @@ class NodeInputs(BaseNodeInputs):
 		right_dir.rotate(10.0)
 		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir, 100)))
 
+		#need value between 0 and 10
+		self.distance_left = int(self.distance_left /10)
+		self.distance_right = int(self.distance_right /10)
+
+		back_dir = copy.copy(self.node.dir) * -1
+		self.distance_back = max(0, min(50, physic_world.intersection_line_spheres(self.node.pos, back_dir, 50)))
+		self.distance_back = int(self.distance_back /5)
+
 	def draw(self, pygame_draw, window):
 		integer_pos = SimpleVec2D(int(self.node.pos.x), int(self.node.pos.y))
 		left_dir = copy.copy(self.node.dir)
 		left_dir.rotate(-10.0)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left + window.get_rect().center)
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left*10 + window.get_rect().center)
 
 		right_dir = copy.copy(self.node.dir)
 		right_dir.rotate(10.0)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right + window.get_rect().center)
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right*10 + window.get_rect().center)
+
+
+		back_dir = copy.copy(self.node.dir) * -1
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + back_dir * self.distance_back*5 + window.get_rect().center)
 
