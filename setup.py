@@ -5,7 +5,7 @@ from cx_Freeze import setup, Executable
 options = {
     'build_exe': {
         'compressed': True,
-		'include_files': ['node_2_inputs_move_right_left_wheel/', 'actions.py', 'decision_maker.py', 'node_inputs.py', 'vector_helper.py']
+		'include_files': ['node_2_inputs_move_right_left_wheel/', 'actions.py', 'decision_maker.py', 'node_inputs.py']
     }
 }
 
