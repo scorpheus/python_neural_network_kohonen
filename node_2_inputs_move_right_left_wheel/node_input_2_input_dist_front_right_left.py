@@ -13,11 +13,11 @@ class NodeInputs(BaseNodeInputs):
 
 		# set the min max for the two input
 		self.min_max_inputs[0][0] = 0
-		self.min_max_inputs[0][1] = 10
+		self.min_max_inputs[0][1] = 100
 		self.min_max_inputs[1][0] = 0
-		self.min_max_inputs[1][1] = 10
+		self.min_max_inputs[1][1] = 100
 		self.min_max_inputs[2][0] = 0
-		self.min_max_inputs[2][1] = 5
+		self.min_max_inputs[2][1] = 50
 
 		self.distance_left = 5
 		self.distance_right = 5
@@ -43,24 +43,30 @@ class NodeInputs(BaseNodeInputs):
 		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir, 100)))
 
 		#need value between 0 and 10
-		self.distance_left = int(self.distance_left /10)
-		self.distance_right = int(self.distance_right /10)
+		# self.distance_left = int(self.distance_left /10)
+		# self.distance_right = int(self.distance_right /10)
+		self.distance_left = int(self.distance_left /1)
+		self.distance_right = int(self.distance_right /1)
 
 		back_dir = copy.copy(self.node.dir) * -1
 		self.distance_back = max(0, min(50, physic_world.intersection_line_spheres(self.node.pos, back_dir, 50)))
-		self.distance_back = int(self.distance_back /5)
+		# self.distance_back = int(self.distance_back /5)
+		self.distance_back = int(self.distance_back /1)
 
 	def draw(self, pygame_draw, window):
 		integer_pos = SimpleVec2D(int(self.node.pos.x), int(self.node.pos.y))
 		left_dir = copy.copy(self.node.dir)
 		left_dir.rotate(-10.0)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left*10 + window.get_rect().center)
+		# pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left*10 + window.get_rect().center)
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left + window.get_rect().center)
 
 		right_dir = copy.copy(self.node.dir)
 		right_dir.rotate(10.0)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right*10 + window.get_rect().center)
+		# pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right*10 + window.get_rect().center)
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right + window.get_rect().center)
 
 
 		back_dir = copy.copy(self.node.dir) * -1
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + back_dir * self.distance_back*5 + window.get_rect().center)
+		# pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + back_dir * self.distance_back*5 + window.get_rect().center)
+		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + back_dir * self.distance_back + window.get_rect().center)
 
