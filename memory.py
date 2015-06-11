@@ -36,11 +36,15 @@ class Memory:
 		self.fragment_array = np.load("fragment_array.npy")
 		self.fragments_inputs_array = np.load("fragments_inputs_array.npy")
 		self.fragments_associated_action_array = np.load("fragments_associated_action_array.npy")
+		self.m_NbFragmentPerActionArray = np.load("m_NbFragmentPerActionArray.npy")
+		self.m_TabPercentFragmentPerAction = np.load("m_TabPercentFragmentPerAction.npy")
 
 	def save(self):
 		np.save("fragment_array", self.fragment_array)
 		np.save("fragments_inputs_array", self.fragments_inputs_array)
 		np.save("fragments_associated_action_array", self.fragments_associated_action_array)
+		np.save("m_NbFragmentPerActionArray", self.m_NbFragmentPerActionArray)
+		np.save("m_TabPercentFragmentPerAction", self.m_TabPercentFragmentPerAction)
 
 
 	def GetNbFragmentPerActionArray(self):
