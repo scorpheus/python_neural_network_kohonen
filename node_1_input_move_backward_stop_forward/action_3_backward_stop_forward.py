@@ -2,7 +2,7 @@ __author__ = 'scorpheus'
 
 # contain the actions the node can do
 from actions import BaseActions
-import copy
+import gs
 
 
 class Actions(BaseActions):
@@ -26,7 +26,7 @@ class Actions(BaseActions):
 		return name
 
 	def execute_action(self, action_type, node):
-		new_pos = copy.copy(node.pos)
+		new_pos = gs.Vector2(node.pos)
 		if action_type == self.action_backward:
 			new_pos -= node.dir *1.0
 		elif action_type == self.action_stop:

@@ -47,7 +47,8 @@ def play_simulation():
 		if key_down(gs.InputDevice.KeyL):
 			font.Write(render.render_system, 'Frag in Mem: %d' % perso.kohonen_behaviour.memory.GetNbFragment(), gs.Vector3(10, 120, 0.5))
 			for action in range(perso_actions.nb_actions):
-				font.Write(render.render_system, 'Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), gs.Vector3(10, 140 + 20*action, 0.5))
+				font.Write(render.render_system, 'Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), gs.Vector3(10, 140 + 20*action, 0.5),
+						   perso.kohonen_behaviour.color_array[action])
 
 		font.Write(render.render_system, str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), gs.Vector3(10, 50, 0.5))
 

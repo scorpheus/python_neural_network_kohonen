@@ -17,8 +17,32 @@ class RandomSphereList():
 	def __init__(self, size_world):
 		self.sphere_array = []
 
-		for id_sphere in range(50):
-			self.sphere_array.extend([sphere(randint(-size_world.x*0.5, size_world.x*0.5), randint(-size_world.y*0.5, size_world.y*0.5), 15)])
+		# for id_sphere in range(50):
+		# 	self.sphere_array.extend([sphere(randint(-size_world.x*0.5, size_world.x*0.5), randint(-size_world.y*0.5, size_world.y*0.5), 15)])
+
+		with open("map.txt") as f:
+			data = f.readlines()
+			y = -150
+			for d in data:
+				x = -150
+				for v in d:
+					if v == 'X':
+						self.sphere_array.extend([sphere(x, y, 15)])
+					x += 27
+				y += 27
+
+
+		# make a square
+		# for id_sphere in range(10):
+		# 	self.sphere_array.extend([sphere(150, -120 + id_sphere * 27, 15)])
+		# for id_sphere in range(10):
+		# 	self.sphere_array.extend([sphere(-150, -120 + id_sphere * 27, 15)])
+		# for id_sphere in range(10):
+		# 	self.sphere_array.extend([sphere(-120 + id_sphere * 27, -150, 15)])
+		# for id_sphere in range(10):
+		# 	self.sphere_array.extend([sphere(-120 + id_sphere * 27, 150, 15)])
+
+
 
 	def draw(self, render):
 		width = render.renderer.GetCurrentOutputWindow().GetSize().x

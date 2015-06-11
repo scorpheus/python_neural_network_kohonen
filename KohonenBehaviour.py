@@ -25,7 +25,17 @@ class KohonenBehaviour:
 
 		self.last_messed_up_nb_fragment_in_memory = 0
 
+		self.color_array = [gs.Color.White, gs.Color.Grey, gs.Color.Red, gs.Color.Green, gs.Color.Blue, gs.Color.Yellow, gs.Color.Orange, gs.Color.Purple,
+							gs.Color(0.5, 0, 0), gs.Color(0, 0.5, 0), gs.Color(0, 0, 0.5), gs.Color(0.5, 0.5, 0), gs.Color(0, 0.5, 0.5), gs.Color(0.5, 0, 0.5), gs.Color(0.5, 1, 0), gs.Color(1, 0.5, 0), ]
+
 	def update(self):
+
+		if key_down(gs.InputDevice.KeyA):
+			self.memory.save()
+
+		if key_down(gs.InputDevice.KeyZ):
+			self.memory.load()
+
 		if key_down(gs.InputDevice.KeyM) or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 1500:
 			self.last_messed_up_nb_fragment_in_memory = self.memory.GetNbFragment()
 			self.neural_network.MessedUpNeuroneInputs(self.node_inputs)
@@ -82,7 +92,7 @@ class KohonenBehaviour:
 				value_input_neurone = self.neural_network.inputs_array[input][id_neurone]
 
 				if self.neural_network.neurone_action_array[id_neurone] != -1:
-					color.r = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions
+					color = self.color_array[self.neural_network.neurone_action_array[id_neurone]]
 				range_value_input = range_adjust(value_input_neurone, min, max, 10, width)
 				render.line2d(range_value_input, y, range_value_input, y+20, color, color)
 
@@ -96,7 +106,7 @@ class KohonenBehaviour:
 		if self.memory.fragment_array.shape[0] != 0:
 			for fragment in range(self.memory.fragment_array.shape[0]):
 				input_count = 0
-				color.r = self.memory.fragment_array[fragment].associated_action / self.memory.nb_actions
+				color = self.color_array[self.memory.fragment_array[fragment].associated_action]
 
 				for value_input_neurone in np.nditer(self.memory.fragment_array[fragment].input_array):
 					y = (height*0.25) / (self.neural_network.m_NbInput+1) * (input_count + 1)
