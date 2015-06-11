@@ -14,56 +14,48 @@ from node_2_inputs_move_right_left_wheel.action_4_move_right_left_wheel import A
 from node_2_inputs_move_right_left_wheel.decision_maker import DecisionMaker
 
 
-#import and init pygame
-import pygame
-pygame.init()
+# import and init OOKPY
+from gs.plus import *
 
-#create the screen
-window = pygame.display.set_mode((640, 480))
+render.init(640, 480, "pkg.core")
+
+# init perso
 perso_inputs = NodeInputs()
 perso_actions = Actions()
 perso_decision_maker = DecisionMaker()
 perso = Node(perso_actions, perso_inputs, perso_decision_maker)
 
-physic_world = PhysicWorld(window)
+physic_world = PhysicWorld(gs.Vector2(640, 480))
 
-# initialize font
-myfont = pygame.font.SysFont("monospace", 15)
-clock = pygame.time.Clock()
+# create the font object
+font = gs.RasterFont("@core/fonts/default.ttf", 12, 512)
+
 
 #input handling (somewhat boilerplate code):
 def play_simulation():
-	while True:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				sys.exit(0)
-			# else:
-			# 	print(event)
+	while not key_press(gs.InputDevice.KeyEscape):
 
-		window.fill((0,0,0))
-		perso.draw(pygame.draw, window)
+		render.clear()
+
+		perso.draw(render)
 		perso.update(physic_world)
 
+		render.renderer.EnableBlending(True)
+		render.renderer.EnableDepthTest(False)
+
 		# render text
-		label = myfont.render('Frag in Mem: %d' % perso.kohonen_behaviour.memory.GetNbFragment(), 1, (255, 255, 0))
-
-		pressed = pygame.key.get_pressed()
-		if pressed[pygame.K_l]:
-			window.blit(label, (10, 120))
+		if key_down(gs.InputDevice.KeyL):
+			font.Write(render.render_system, 'Frag in Mem: %d' % perso.kohonen_behaviour.memory.GetNbFragment(), gs.Vector3(10, 120, 0.5))
 			for action in range(perso_actions.nb_actions):
-				label = myfont.render('Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), 1, (255, 255, 0))
-				window.blit(label, (10, 140 + 20*action))
+				font.Write(render.render_system, 'Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), gs.Vector3(10, 140 + 20*action, 0.5))
 
-		label = myfont.render(str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), 1, (255,255,0))
-		window.blit(label, (10, 100))
-		clock.tick()
-		label = myfont.render("fps: "+str(int(clock.get_fps())), 1, (255,255,0))
-		window.blit(label, (10, 50))
+		font.Write(render.render_system, str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), gs.Vector3(10, 50, 0.5))
 
-		physic_world.draw(pygame.draw, window)
+		physic_world.draw(render)
 
 		#draw it to the screen
-		pygame.display.flip()
+		render.render_system.DrawRasterFontBatch()
+		render.flip()
 
 if __name__ == "__main__":
 	play_simulation()

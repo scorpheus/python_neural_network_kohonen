@@ -1,10 +1,11 @@
 __author__ = 'scorpheus'
 
-import pygame
 from memory import Memory
 from neural_network import NeuralNetwork
 import numpy as np
 from random import randrange
+import gs
+from gs.plus import key_down
 
 
 def range_adjust(k, a, b, u, v):
@@ -25,10 +26,10 @@ class KohonenBehaviour:
 		self.last_messed_up_nb_fragment_in_memory = 0
 
 	def update(self):
-		pressed = pygame.key.get_pressed()
-		if pressed[pygame.K_m] or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 1500:
-			self.last_messed_up_nb_fragment_in_memory = self.memory.GetNbFragment()
-			self.neural_network.MessedUpNeuroneInputs(self.node_inputs)
+		# pressed = pygame.key.get_pressed()
+		# if pressed[pygame.K_m] or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 1500:
+		# 	self.last_messed_up_nb_fragment_in_memory = self.memory.GetNbFragment()
+		# 	self.neural_network.MessedUpNeuroneInputs(self.node_inputs)
 
 		map_neural_network_on_memory = True
 		if False:    # training
@@ -62,19 +63,18 @@ class KohonenBehaviour:
 
 		return selected_action
 
-	def draw(self, pygame_draw, window):
-		pressed = pygame.key.get_pressed()
-		if not pressed[pygame.K_k]:
+	def draw(self, render, width, height):
+		if not key_down(gs.InputDevice.KeyK):
 			return
 
-		window_height = window.get_height()
-		window_width = window.get_width()-10
+		width = width-10
 
 		# draw neural network
 		previous_point = np.empty((self.neural_network.nb_neurone))
-		y_part = (window_height*0.25) / (self.neural_network.m_NbInput+1)
+		y_part = (height*0.25) / (self.neural_network.m_NbInput+1)
+		color = gs.Color(1, 1, 1)
 		for input in range(self.neural_network.m_NbInput):
-			y = (window_height*0.25) + y_part * (input + 1)
+			y = (height*0.25) + y_part * (input + 1)
 			val_input = self.node_inputs.min_max_inputs[input]
 			min = val_input[0]
 			max = val_input[1]
@@ -82,14 +82,13 @@ class KohonenBehaviour:
 			for id_neurone in range(self.neural_network.nb_neurone):
 				value_input_neurone = self.neural_network.inputs_array[input][id_neurone]
 
-				color = 255
 				if self.neural_network.neurone_action_array[id_neurone] != -1:
-					color = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions * 255
-				range_value_input = int(range_adjust(value_input_neurone, min, max, 10, window_width))
-				pygame_draw.line(window, (color, color, 255), (range_value_input, int(y)), (range_value_input, int(y+20)))
+					color.r = self.neural_network.neurone_action_array[id_neurone] / self.memory.nb_actions
+				range_value_input = range_adjust(value_input_neurone, min, max, 10, width)
+				render.line2d(range_value_input, y, range_value_input, y+20, color, color)
 
 				if input != 0:
-					pygame_draw.line(window, (color, color, 255), (previous_point[id_neurone], int(y-y_part+20)), (range_value_input, int(y)))
+					render.line2d(previous_point[id_neurone], y-y_part+20, range_value_input, y, color, color)
 				previous_point[id_neurone] = range_value_input
 
 		# return
@@ -98,16 +97,16 @@ class KohonenBehaviour:
 		if self.memory.fragment_array.shape[0] != 0:
 			for fragment in range(self.memory.fragment_array.shape[0]):
 				input_count = 0
-				color = self.memory.fragment_array[fragment].associated_action / self.memory.nb_actions * 255
+				color.r = self.memory.fragment_array[fragment].associated_action / self.memory.nb_actions
 
 				for value_input_neurone in np.nditer(self.memory.fragment_array[fragment].input_array):
-					y = (window_height*0.25) / (self.neural_network.m_NbInput+1) * (input_count + 1)
+					y = (height*0.25) / (self.neural_network.m_NbInput+1) * (input_count + 1)
 					val_input = self.node_inputs.min_max_inputs[input_count]
 					min = val_input[0]
 					max = val_input[1]
 
-					range_value_int = int(range_adjust(value_input_neurone, min, max, 10, window_width))
-					pygame_draw.line(window, (color, color, 255), (range_value_int, int(y)), (range_value_int, int(y+20)))
+					range_value_int = range_adjust(value_input_neurone, min, max, 10, width)
+					render.line2d(range_value_int, y, range_value_int, y+20, color, color)
 
 					input_count += 1
 

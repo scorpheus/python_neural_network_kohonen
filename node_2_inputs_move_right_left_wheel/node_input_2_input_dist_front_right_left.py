@@ -2,8 +2,8 @@ __author__ = 'scorpheus'
 
 from node_inputs import BaseNodeInputs
 from memory import Fragment
-import copy
-from simple_vec2d import SimpleVec2D
+import gs
+from vector_helper import rotate
 
 
 class NodeInputs(BaseNodeInputs):
@@ -34,12 +34,12 @@ class NodeInputs(BaseNodeInputs):
 		return current_fragment
 
 	def update(self, physic_world):
-		left_dir = copy.copy(self.node.dir)
-		left_dir.rotate(-10.0)
+		left_dir = gs.Vector2(self.node.dir)
+		rotate(left_dir, -10.0)
 		self.distance_left = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, left_dir, 100)))
 
-		right_dir = copy.copy(self.node.dir)
-		right_dir.rotate(10.0)
+		right_dir = gs.Vector2(self.node.dir)
+		rotate(right_dir, 10.0)
 		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir, 100)))
 
 		#need value between 0 and 10
@@ -48,25 +48,25 @@ class NodeInputs(BaseNodeInputs):
 		self.distance_left = int(self.distance_left /1)
 		self.distance_right = int(self.distance_right /1)
 
-		back_dir = copy.copy(self.node.dir) * -1
+		back_dir = gs.Vector2(self.node.dir) * -1
 		self.distance_back = max(0, min(50, physic_world.intersection_line_spheres(self.node.pos, back_dir, 50)))
 		# self.distance_back = int(self.distance_back /5)
-		self.distance_back = int(self.distance_back /1)
+		self.distance_back = int(self.distance_back / 1)
 
-	def draw(self, pygame_draw, window):
-		integer_pos = SimpleVec2D(int(self.node.pos.x), int(self.node.pos.y))
-		left_dir = copy.copy(self.node.dir)
-		left_dir.rotate(-10.0)
-		# pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left*10 + window.get_rect().center)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + left_dir * self.distance_left + window.get_rect().center)
+	def draw(self, render, center):
+		world_pos = self.node.pos + center
 
-		right_dir = copy.copy(self.node.dir)
-		right_dir.rotate(10.0)
-		# pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right*10 + window.get_rect().center)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + right_dir * self.distance_right + window.get_rect().center)
+		left_dir = gs.Vector2(self.node.dir)
+		rotate(left_dir, -10.0)
+		world_end_line = self.node.pos + left_dir * self.distance_left + center
+		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)
 
+		right_dir = gs.Vector2(self.node.dir)
+		rotate(right_dir, 10.0)
+		world_end_line = self.node.pos + right_dir * self.distance_right + center
+		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)
 
-		back_dir = copy.copy(self.node.dir) * -1
-		# pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + back_dir * self.distance_back*5 + window.get_rect().center)
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + back_dir * self.distance_back + window.get_rect().center)
+		back_dir = gs.Vector2(self.node.dir) * -1
+		world_end_line = self.node.pos + back_dir * self.distance_back + center
+		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)
 

@@ -2,9 +2,8 @@ __author__ = 'scorpheus'
 
 from node_inputs import BaseNodeInputs
 from memory import Fragment
-import pygame
-from simple_vec2d import SimpleVec2D
-import copy
+import gs
+from gs.plus import key_down
 
 class NodeInputs(BaseNodeInputs):
 
@@ -26,16 +25,17 @@ class NodeInputs(BaseNodeInputs):
 		return current_fragment
 
 	def update(self, physic_world):
-		pressed = pygame.key.get_pressed()
-		if pressed[pygame.K_r]:
+		if key_down(gs.InputDevice.KeyR):
 			self.distance_front = 0 if self.distance_front - 0.1 < 0 else self.distance_front - 0.1
-		elif pressed[pygame.K_t]:
+		elif key_down(gs.InputDevice.KeyT):
 			self.distance_front = 100 if self.distance_front + 0.1 > 100 else self.distance_front + 0.1
 
-		front_dir = copy.copy(self.node.dir)
+		front_dir = gs.Vector2(self.node.dir)
 
 		self.distance_front = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, front_dir, 100)))
 
-	def draw(self, pygame_draw, window):
-		integer_pos = SimpleVec2D(int(self.node.pos.x), int(self.node.pos.y))
-		pygame_draw.line(window, (255, 255, 255), integer_pos + window.get_rect().center, integer_pos + self.node.dir * self.distance_front + window.get_rect().center)
+	def draw(self, render, center):
+		world_pos = self.node.pos + center
+
+		world_end_line = self.node.pos + self.node.dir * self.distance_front + center
+		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)

@@ -1,15 +1,16 @@
 __author__ = 'scorpheus'
 
-from simple_vec2d import SimpleVec2D
 from KohonenBehaviour import KohonenBehaviour
+import gs
+from render_helper import circle2d
 
 
 class Node:
 	def __init__(self, actions, inputs, decision_maker):
 		inputs.set_node(self)
 
-		self.pos = SimpleVec2D(0, 0)
-		self.dir = SimpleVec2D(1, 0)
+		self.pos = gs.Vector2(0, 0)
+		self.dir = gs.Vector2(1, 0)
 
 		self.actions = actions
 		self.inputs = inputs
@@ -27,22 +28,28 @@ class Node:
 		if not physic_world.in_collision_with_spheres(new_pos, 5):
 			self.pos = new_pos
 
-	def draw(self, pygame_draw, window):
-		self.inputs.draw(pygame_draw, window)
-		self.kohonen_behaviour.draw(pygame_draw, window)
+	def draw(self, render):
+		width = render.renderer.GetCurrentOutputWindow().GetSize().x
+		height = render.renderer.GetCurrentOutputWindow().GetSize().y
+		center = gs.Vector2(width/2, height/2)
+
+		self.inputs.draw(render, center)
+		self.kohonen_behaviour.draw(render, width, height)
 
 		radius = 5
-		integer_pos = SimpleVec2D(int(self.pos.x), int(self.pos.y))
-		pos = integer_pos + window.get_rect().center
-		pos2 = integer_pos + self.dir*radius + window.get_rect().center
-		pygame_draw.circle(window, (255, 255, 255), pos, radius, 1)
-		pygame_draw.line(window, (255, 255, 255), pos, pos2)
+		pos = self.pos + center
+		pos2 = self.pos + self.dir * radius + center
 
-		if self.pos.x > window.get_rect().width*0.5:
-			self.pos.x = window.get_rect().width*0.5
-		elif self.pos.x < -window.get_rect().width*0.5:
-			self.pos.x = -window.get_rect().width*0.5
-		elif self.pos.y > window.get_rect().height*0.5:
-			self.pos.y = window.get_rect().height*0.5
-		elif self.pos.y < -window.get_rect().height*0.5:
-			self.pos.y = -window.get_rect().height*0.5
+		circle2d(render, pos.x, pos.y, radius)
+		render.line2d(pos.x, pos.y, pos2.x, pos2.y)
+
+		half_width, half_height = width/2, height/2
+
+		if self.pos.x > half_width:
+			self.pos.x = half_width
+		elif self.pos.x < -half_width:
+			self.pos.x = -half_width
+		elif self.pos.y > half_height:
+			self.pos.y = half_height
+		elif self.pos.y < -half_height:
+			self.pos.y = -half_height

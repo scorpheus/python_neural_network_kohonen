@@ -1,41 +1,45 @@
 __author__ = 'scorpheus'
 
-from simple_vec2d import SimpleVec2D
 import numpy as np
 from random import randint
 import math
+import gs
+from render_helper import circle2d
 
 
 class sphere():
-	def __init__(self, x, y, r, center):
-		self.pos = SimpleVec2D(x, y)
+	def __init__(self, x, y, r):
+		self.pos = gs.Vector2(x, y)
 		self.r = r
-		self.d_pos = (int(self.pos.x)+center[0], int(self.pos.y)+center[1])
 
 
 class RandomSphereList():
-	def __init__(self, window):
+	def __init__(self, size_world):
 		self.sphere_array = []
 
 		for id_sphere in range(50):
-			self.sphere_array.extend([sphere(randint(-window.get_rect().width*0.5, window.get_rect().width*0.5), randint(-window.get_rect().height*0.5, window.get_rect().height*0.5), 15, window.get_rect().center)])
+			self.sphere_array.extend([sphere(randint(-size_world.x*0.5, size_world.x*0.5), randint(-size_world.y*0.5, size_world.y*0.5), 15)])
 
-	def draw(self, pygame_draw, window):
+	def draw(self, render):
+		width = render.renderer.GetCurrentOutputWindow().GetSize().x
+		height = render.renderer.GetCurrentOutputWindow().GetSize().y
+		center = gs.Vector2(width/2, height/2)
+
 		for pos_sphere in self.sphere_array:
-			pygame_draw.circle(window, (255, 255, 255), pos_sphere.d_pos, pos_sphere.r, 1)
+			circle2d(render, pos_sphere.pos.x + center.x, pos_sphere.pos.y + center.y, pos_sphere.r)
 
 
 class PhysicWorld():
-	def __init__(self, window):
-		self.sphere_list = RandomSphereList(window)
+	def __init__(self, size_world):
+		self.sphere_list = RandomSphereList(size_world)
 
-	def draw(self, pygame_draw, window):
-		self.sphere_list.draw(pygame_draw, window)
+	def draw(self, render):
+		self.sphere_list.draw(render)
 
 	def in_collision_with_spheres(self, pos, r):
 		max_dist_check = r**2
 		for pos_sphere in self.sphere_list.sphere_array:
-			if pos_sphere.pos.get_dist_sqrd(pos) <= max_dist_check+pos_sphere.r**2:
+			if gs.Vector2.Dist2(pos_sphere.pos, pos) <= max_dist_check+pos_sphere.r**2:
 				return True
 		return False
 
@@ -43,20 +47,21 @@ class PhysicWorld():
 		min_intersection_d = 1000000
 		max_dist_check = max_dist**2
 		for pos_sphere in self.sphere_list.sphere_array:
-			if pos_sphere.pos.get_dist_sqrd(s) < max_dist_check:
+			if gs.Vector2.Dist2(pos_sphere.pos, s) < max_dist_check:
 				temp_d = self.LineIntersectSphere(s, d, pos_sphere.pos, pos_sphere.r)
 				if 0 < temp_d < min_intersection_d:
 					min_intersection_d = temp_d
 		return min_intersection_d
 
-	e = SimpleVec2D(0, 0)
+	e = gs.Vector2(0, 0)
+
 	def LineIntersectSphere(self, o, d, c, r):
 		self.e.x = c.x
 		self.e.y = c.y
 		self.e -= o
 
-		k = self.e.dot(d)
-		v = r * r - (self.e.get_length_sqrd() - k * k)
+		k = self.e.Dot(d)
+		v = r * r - (self.e.Len2() - k * k)
 		if v < 0:
 			return 1000000
 
