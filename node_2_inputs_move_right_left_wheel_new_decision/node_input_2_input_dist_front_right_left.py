@@ -3,6 +3,7 @@ __author__ = 'scorpheus'
 from node_inputs import BaseNodeInputs
 from memory import Fragment
 import gs
+from gs.plus import *
 from vector_helper import rotate
 
 
@@ -50,7 +51,7 @@ class NodeInputs(BaseNodeInputs):
 		self.distance_back = max(0, min(50, physic_world.intersection_line_spheres(self.node.pos, back_dir, 50)))
 		self.distance_back = int(self.distance_back)
 
-	def draw(self, render, center):
+	def draw(self, center):
 		world_pos = self.node.pos + center
 
 		left_dir = gs.Vector2(self.node.dir)

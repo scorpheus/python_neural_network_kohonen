@@ -5,6 +5,7 @@ from random import randint
 import math
 import gs
 from render_helper import circle2d
+from gs.plus import *
 
 
 class sphere():
@@ -42,9 +43,7 @@ class RandomSphereList():
 		# for id_sphere in range(10):
 		# 	self.sphere_array.extend([sphere(-120 + id_sphere * 27, 150, 15)])
 
-
-
-	def draw(self, render):
+	def draw(self):
 		width = render.renderer.GetCurrentOutputWindow().GetSize().x
 		height = render.renderer.GetCurrentOutputWindow().GetSize().y
 		center = gs.Vector2(width/2, height/2)
@@ -57,8 +56,8 @@ class PhysicWorld():
 	def __init__(self, size_world):
 		self.sphere_list = RandomSphereList(size_world)
 
-	def draw(self, render):
-		self.sphere_list.draw(render)
+	def draw(self):
+		self.sphere_list.draw()
 
 	def in_collision_with_spheres(self, pos, r):
 		max_dist_check = r**2

@@ -5,7 +5,7 @@ from neural_network import NeuralNetwork
 import numpy as np
 from random import randrange
 import gs
-from gs.plus import key_down
+from gs.plus import *
 
 
 def range_adjust(k, a, b, u, v):
@@ -72,7 +72,7 @@ class KohonenBehaviour:
 
 		return selected_action
 
-	def draw(self, render, width, height):
+	def draw(self, width, height):
 		if not key_down(gs.InputDevice.KeyK):
 			return
 

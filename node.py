@@ -3,6 +3,7 @@ __author__ = 'scorpheus'
 from KohonenBehaviour import KohonenBehaviour
 import gs
 from render_helper import circle2d
+from gs.plus import *
 
 
 class Node:
@@ -30,13 +31,13 @@ class Node:
 		if not physic_world.in_collision_with_spheres(new_pos, 5):
 			self.pos = new_pos
 
-	def draw(self, render):
+	def draw(self):
 		width = render.renderer.GetCurrentOutputWindow().GetSize().x
 		height = render.renderer.GetCurrentOutputWindow().GetSize().y
 		center = gs.Vector2(width/2, height/2)
 
-		self.inputs.draw(render, center)
-		self.kohonen_behaviour.draw(render, width, height)
+		self.inputs.draw(center)
+		self.kohonen_behaviour.draw(width, height)
 
 		radius = 5
 		pos = self.pos + center

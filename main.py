@@ -40,7 +40,7 @@ def play_simulation():
 
 		render.clear()
 
-		perso.draw(render)
+		perso.draw()
 		perso.update(physic_world)
 
 		render.renderer.EnableBlending(True)
@@ -55,7 +55,7 @@ def play_simulation():
 
 		font.Write(render.render_system, str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), gs.Vector3(10, 50, 0.5))
 
-		physic_world.draw(render)
+		physic_world.draw()
 
 		#draw it to the screen
 		render.render_system.DrawRasterFontBatch()
