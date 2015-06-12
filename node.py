@@ -16,6 +16,8 @@ class Node:
 		self.inputs = inputs
 		self.selected_action = 0
 
+		decision_maker.set_node(self)
+
 		self.kohonen_behaviour = KohonenBehaviour(self.inputs, self.actions, decision_maker)
 
 	def update(self, physic_world):
