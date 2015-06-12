@@ -2,25 +2,29 @@ __author__ = 'scorpheus'
 
 import sys
 from node import Node
-
 from physic_world import PhysicWorld
 
 # from node_1_input_move_backward_stop_forward.node_input_1_input_dist_front import NodeInputs
 # from node_1_input_move_backward_stop_forward.action_3_backward_stop_forward import Actions
 # from node_1_input_move_backward_stop_forward.decision_maker import DecisionMaker
 
-# from node_2_inputs_move_right_left_wheel.node_input_2_input_dist_front_right_left import NodeInputs
-# from node_2_inputs_move_right_left_wheel.action_4_move_right_left_wheel import Actions
-# from node_2_inputs_move_right_left_wheel.decision_maker import DecisionMaker
+from node_2_inputs_move_right_left_wheel.node_input_2_input_dist_front_right_left import NodeInputs
+from node_2_inputs_move_right_left_wheel.action_4_move_right_left_wheel import Actions
+from node_2_inputs_move_right_left_wheel.decision_maker import DecisionMaker
 
-from node_2_inputs_move_right_left_wheel_new_decision.node_input_2_input_dist_front_right_left import NodeInputs
-from node_2_inputs_move_right_left_wheel_new_decision.action_4_move_right_left_wheel import Actions
-from node_2_inputs_move_right_left_wheel_new_decision.decision_maker import DecisionMaker
+# from node_2_inputs_move_right_left_wheel_new_decision.node_input_2_input_dist_front_right_left import NodeInputs
+# from node_2_inputs_move_right_left_wheel_new_decision.action_4_move_right_left_wheel import Actions
+# from node_2_inputs_move_right_left_wheel_new_decision.decision_maker import DecisionMaker
 
 # import and init OOKPY
-from gs.plus import *
+import gs
+import gs.plus.clock as clock
+import gs.plus.input as input
+import gs.plus.render as render
+import gs.plus.camera as camera
 
 render.init(640, 480, "pkg.core")
+fps = camera.fps_controller(0, 15, 0)
 
 # init perso
 perso_inputs = NodeInputs()
@@ -30,35 +34,28 @@ perso = Node(perso_actions, perso_inputs, perso_decision_maker)
 
 physic_world = PhysicWorld(gs.Vector2(640, 480))
 
-# create the font object
-font = gs.RasterFont("@core/fonts/default.ttf", 12, 512)
-
-
 #input handling (somewhat boilerplate code):
 def play_simulation():
-	while not key_press(gs.InputDevice.KeyEscape):
+	while not input.key_press(gs.InputDevice.KeyEscape):
+		clock.update()
+		fps.update(clock.get_dt())
+		render.set_camera3d(fps.pos.x, fps.pos.y, fps.pos.z, fps.rot.x, fps.rot.y, fps.rot.z)
 
 		render.clear()
 
 		perso.draw()
 		perso.update(physic_world)
-
-		render.renderer.EnableBlending(True)
-		render.renderer.EnableDepthTest(False)
-
-		# render text
-		if key_down(gs.InputDevice.KeyL):
-			font.Write(render.render_system, 'Frag in Mem: %d' % perso.kohonen_behaviour.memory.GetNbFragment(), gs.Vector3(10, 120, 0.5))
-			for action in range(perso_actions.nb_actions):
-				font.Write(render.render_system, 'Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), gs.Vector3(10, 140 + 20*action, 0.5),
-						   perso.kohonen_behaviour.color_array[action])
-
-		font.Write(render.render_system, str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action), gs.Vector3(10, 50, 0.5))
-
 		physic_world.draw()
 
+		# render text
+		if input.key_down(gs.InputDevice.KeyL):
+			render.text2d(10, 120, 'Frag in Mem: %d' % perso.kohonen_behaviour.memory.GetNbFragment())
+			for action in range(perso_actions.nb_actions):
+				render.text2d(10, 140 + 20*action, 'Frag for %s: %d, %d%%' % (perso_actions.get_current_action_name(action), perso.kohonen_behaviour.memory.m_NbFragmentPerActionArray[action], perso.kohonen_behaviour.memory.m_TabPercentFragmentPerAction[action]), 12, perso.kohonen_behaviour.color_array[action])
+
+		render.text2d(10, 50, str(perso.selected_action)+" "+perso_actions.get_current_action_name(perso.selected_action))
+
 		#draw it to the screen
-		render.render_system.DrawRasterFontBatch()
 		render.flip()
 
 if __name__ == "__main__":

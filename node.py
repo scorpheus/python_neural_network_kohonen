@@ -2,8 +2,11 @@ __author__ = 'scorpheus'
 
 from KohonenBehaviour import KohonenBehaviour
 import gs
-from render_helper import circle2d
-from gs.plus import *
+import gs.plus.render as render
+import gs.plus.input as plus_input
+from render_helper import circle3d
+from math import acos
+from random import randrange
 
 
 class Node:
@@ -17,34 +20,45 @@ class Node:
 		self.inputs = inputs
 		self.selected_action = 0
 
+		self.timer_update = randrange(25)
+
+		self.decision_maker = decision_maker
 		decision_maker.set_node(self)
 
 		self.kohonen_behaviour = KohonenBehaviour(self.inputs, self.actions, decision_maker)
 
+		self.geo = render.load_geometry("@core/res/robot.geo")
+
 	def update(self, physic_world):
 		self.inputs.update(physic_world)
 
-		self.selected_action = self.kohonen_behaviour.update()
+		current_action = self.kohonen_behaviour.update()
+		if self.timer_update <= 0:
+			self.timer_update = randrange(25)
+			self.selected_action = current_action
+		self.timer_update -= 1
 
 		new_pos = self.actions.execute_action(self.selected_action, self)
 		#check no intersection with physic word
-		if not physic_world.in_collision_with_spheres(new_pos, 5):
+		if not physic_world.in_collision_with_spheres(new_pos, 1.0):
 			self.pos = new_pos
 
-	def draw(self):
-		width = render.renderer.GetCurrentOutputWindow().GetSize().x
-		height = render.renderer.GetCurrentOutputWindow().GetSize().y
-		center = gs.Vector2(width/2, height/2)
+		# move randomly somewhere
+		if plus_input.key_down(gs.InputDevice.KeyR):
+			self.decision_maker.reset_progress()
+			self.pos.x = -1 + randrange(100)* 0.01 * (10 - 1)
+			self.pos.y = -1 + randrange(100)* 0.01 * (10 - 1)
 
-		self.inputs.draw(center)
+	def draw(self):
+		width = render.get_renderer().GetCurrentOutputWindow().GetSize().x
+		height = render.get_renderer().GetCurrentOutputWindow().GetSize().y
+
+		self.inputs.draw()
 		self.kohonen_behaviour.draw(width, height)
 
-		radius = 5
-		pos = self.pos + center
-		pos2 = self.pos + self.dir * radius + center
-
-		circle2d(render, pos.x, pos.y, radius)
-		render.line2d(pos.x, pos.y, pos2.x, pos2.y)
+		angle_dir = acos(self.dir.Normalized().Dot(gs.Vector2(1, 0))) * (-1 if self.dir.y > 0 else 1)
+		render.geometry3d(self.pos.x, 0, self.pos.y, self.geo, 0, angle_dir + 1.57, 0)
+		circle3d(self.pos.x, self.pos.y, 0.5)
 
 		half_width, half_height = width/2, height/2
 

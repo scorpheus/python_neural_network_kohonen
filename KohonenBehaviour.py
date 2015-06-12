@@ -5,7 +5,8 @@ from neural_network import NeuralNetwork
 import numpy as np
 from random import randrange
 import gs
-from gs.plus import *
+import gs.plus.input as plus_input
+import gs.plus.render as render
 
 
 def range_adjust(k, a, b, u, v):
@@ -30,13 +31,13 @@ class KohonenBehaviour:
 
 	def update(self):
 
-		if key_down(gs.InputDevice.KeyA):
+		if plus_input.key_down(gs.InputDevice.KeyA):
 			self.memory.save()
 
-		if key_down(gs.InputDevice.KeyZ):
+		if plus_input.key_down(gs.InputDevice.KeyZ):
 			self.memory.load()
 
-		if key_down(gs.InputDevice.KeyM) or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 1500:
+		if plus_input.key_down(gs.InputDevice.KeyM) or self.memory.GetNbFragment() - self.last_messed_up_nb_fragment_in_memory > 1500:
 			self.last_messed_up_nb_fragment_in_memory = self.memory.GetNbFragment()
 			self.neural_network.MessedUpNeuroneInputs(self.node_inputs)
 
@@ -73,7 +74,7 @@ class KohonenBehaviour:
 		return selected_action
 
 	def draw(self, width, height):
-		if not key_down(gs.InputDevice.KeyK):
+		if not plus_input.key_down(gs.InputDevice.KeyK):
 			return
 
 		width = width-10
@@ -114,7 +115,7 @@ class KohonenBehaviour:
 					min = val_input[0]
 					max = val_input[1]
 
-					range_value_int = range_adjust(value_input_neurone, min, max, 10, width)
+					range_value_int = range_adjust(value_input_neurone, min, max, 10, width) + randrange(100)*0.1
 					render.line2d(range_value_int, y, range_value_int, y+20, color, color)
 
 					input_count += 1

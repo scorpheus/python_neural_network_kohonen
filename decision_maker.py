@@ -6,7 +6,10 @@ __author__ = 'scorpheus'
 class BaseDecisionMaker:
 
 	def __init__(self):
-		pass
+		self.node = None
+
+	def set_node(self, n):
+		self.node = n
 
 	def is_good_action(self, fragment, action):
 		pass

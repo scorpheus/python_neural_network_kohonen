@@ -4,8 +4,8 @@ import numpy as np
 from random import randint
 import math
 import gs
-from render_helper import circle2d
-from gs.plus import *
+from render_helper import circle3d
+import gs.plus.render as render
 
 
 class sphere():
@@ -17,39 +17,31 @@ class sphere():
 class RandomSphereList():
 	def __init__(self, size_world):
 		self.sphere_array = []
-
-		# for id_sphere in range(50):
-		# 	self.sphere_array.extend([sphere(randint(-size_world.x*0.5, size_world.x*0.5), randint(-size_world.y*0.5, size_world.y*0.5), 15)])
+		self.tile_array = []
 
 		with open("map.txt") as f:
 			data = f.readlines()
-			y = -150
+			y = -5
 			for d in data:
-				x = -150
+				x = -5
 				for v in d:
 					if v == 'X':
-						self.sphere_array.extend([sphere(x, y, 15)])
-					x += 27
-				y += 27
+						self.sphere_array.extend([sphere(x, y, 0.5)])
+					x += 1
+				y += 1
 
-
-		# make a square
-		# for id_sphere in range(10):
-		# 	self.sphere_array.extend([sphere(150, -120 + id_sphere * 27, 15)])
-		# for id_sphere in range(10):
-		# 	self.sphere_array.extend([sphere(-150, -120 + id_sphere * 27, 15)])
-		# for id_sphere in range(10):
-		# 	self.sphere_array.extend([sphere(-120 + id_sphere * 27, -150, 15)])
-		# for id_sphere in range(10):
-		# 	self.sphere_array.extend([sphere(-120 + id_sphere * 27, 150, 15)])
+		self.tile_ground = render.get_render_system().LoadGeometry("@core/res/tile_0.geo")
+		self.wall_1m = render.get_render_system().LoadGeometry("@core/res/wall_1m_high.geo")
+		self.wall_2m = render.get_render_system().LoadGeometry("@core/res/wall_2m_high.geo")
 
 	def draw(self):
-		width = render.renderer.GetCurrentOutputWindow().GetSize().x
-		height = render.renderer.GetCurrentOutputWindow().GetSize().y
+		width = render.get_renderer().GetCurrentOutputWindow().GetSize().x
+		height = render.get_renderer().GetCurrentOutputWindow().GetSize().y
 		center = gs.Vector2(width/2, height/2)
 
 		for pos_sphere in self.sphere_array:
-			circle2d(render, pos_sphere.pos.x + center.x, pos_sphere.pos.y + center.y, pos_sphere.r)
+			render.geometry3d(pos_sphere.pos.x, 0, pos_sphere.pos.y, self.wall_1m)
+			circle3d(pos_sphere.pos.x, pos_sphere.pos.y, pos_sphere.r)
 
 
 class PhysicWorld():

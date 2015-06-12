@@ -15,11 +15,6 @@ class DecisionMaker(BaseDecisionMaker):
 		for i in range(10):
 			self.progress.append(gs.Vector2(-1000, 0))
 
-		self.node = None
-
-	def set_node(self, n):
-		self.node = n
-
 	def is_good_action(self, fragment, action):
 		average = gs.Vector2(0, 0)
 		for v in self.progress:

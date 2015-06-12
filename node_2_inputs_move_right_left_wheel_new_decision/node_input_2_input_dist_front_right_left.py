@@ -3,7 +3,7 @@ __author__ = 'scorpheus'
 from node_inputs import BaseNodeInputs
 from memory import Fragment
 import gs
-from gs.plus import *
+import gs.plus.render as render
 from vector_helper import rotate
 
 
@@ -14,15 +14,15 @@ class NodeInputs(BaseNodeInputs):
 
 		# set the min max for the two input
 		self.min_max_inputs[0][0] = 0
-		self.min_max_inputs[0][1] = 100
+		self.min_max_inputs[0][1] = 4
 		self.min_max_inputs[1][0] = 0
-		self.min_max_inputs[1][1] = 100
+		self.min_max_inputs[1][1] = 4
 		self.min_max_inputs[2][0] = 0
-		self.min_max_inputs[2][1] = 50
+		self.min_max_inputs[2][1] = 2
 
-		self.distance_left = 5
-		self.distance_right = 5
-		self.distance_back = 2
+		self.distance_left = 2.5
+		self.distance_right = 2.5
+		self.distance_back = 1
 
 	def GetCurrentNodeFragment(self):
 		current_fragment = Fragment(self.nb_inputs)
@@ -37,34 +37,32 @@ class NodeInputs(BaseNodeInputs):
 	def update(self, physic_world):
 		left_dir = gs.Vector2(self.node.dir)
 		rotate(left_dir, -10.0)
-		self.distance_left = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, left_dir, 100)))
+		self.distance_left = max(0, min(4, physic_world.intersection_line_spheres(self.node.pos, left_dir, 4)))
 
 		right_dir = gs.Vector2(self.node.dir)
 		rotate(right_dir, 10.0)
-		self.distance_right = max(0, min(100, physic_world.intersection_line_spheres(self.node.pos, right_dir, 100)))
+		self.distance_right = max(0, min(4, physic_world.intersection_line_spheres(self.node.pos, right_dir, 4)))
+
+		back_dir = gs.Vector2(self.node.dir) * -1
+		self.distance_back = max(0, min(2, physic_world.intersection_line_spheres(self.node.pos, back_dir, 2)))
 
 		# need 100 values not the intermediary, not necessary
-		self.distance_left = int(self.distance_left)
-		self.distance_right = int(self.distance_right)
+		self.distance_left = int(self.distance_left * 100) / 100
+		self.distance_right = int(self.distance_right * 100) / 100
+		self.distance_back = int(self.distance_back * 100) / 100
 
-		back_dir = gs.Vector2(self.node.dir) * -1
-		self.distance_back = max(0, min(50, physic_world.intersection_line_spheres(self.node.pos, back_dir, 50)))
-		self.distance_back = int(self.distance_back)
-
-	def draw(self, center):
-		world_pos = self.node.pos + center
-
+	def draw(self):
 		left_dir = gs.Vector2(self.node.dir)
 		rotate(left_dir, -10.0)
-		world_end_line = self.node.pos + left_dir * self.distance_left + center
-		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)
+		world_end_line = self.node.pos + left_dir * self.distance_left
+		render.line3d(self.node.pos.x, 0, self.node.pos.y, world_end_line.x, 0, world_end_line.y)
 
 		right_dir = gs.Vector2(self.node.dir)
 		rotate(right_dir, 10.0)
-		world_end_line = self.node.pos + right_dir * self.distance_right + center
-		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)
+		world_end_line = self.node.pos + right_dir * self.distance_right
+		render.line3d(self.node.pos.x, 0, self.node.pos.y, world_end_line.x, 0, world_end_line.y)
 
 		back_dir = gs.Vector2(self.node.dir) * -1
-		world_end_line = self.node.pos + back_dir * self.distance_back + center
-		render.line2d(world_pos.x, world_pos.y, world_end_line.x, world_end_line.y)
+		world_end_line = self.node.pos + back_dir * self.distance_back
+		render.line3d(self.node.pos.x, 0, self.node.pos.y, world_end_line.x, 0, world_end_line.y)
 
