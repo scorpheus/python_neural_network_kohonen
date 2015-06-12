@@ -37,11 +37,11 @@ class DecisionMaker(BaseDecisionMaker):
 		if action & Actions.action_right_backward and action & Actions.action_left_forward:
 			return True
 
-		if fragment.input_array[2] > random_set(0.5, 1.5) and fragment.input_array[0] < random_set(1, 3) and fragment.input_array[1] < 2 and (action & Actions.action_right_backward and action & Actions.action_left_backward):
+		if fragment.input_array[2] > random_set(0.5, 1.5) and fragment.input_array[0] < random_set(1, 3) and fragment.input_array[1] < random_set(1, 3) and (action & Actions.action_right_backward and action & Actions.action_left_backward):
 			return True
-		if fragment.input_array[2] > random_set(0.5, 1.5) and fragment.input_array[0] < random_set(1, 3) and fragment.input_array[1] > 2 and (action & Actions.action_left_forward):
+		if fragment.input_array[2] > random_set(0.5, 1.5) and fragment.input_array[0] < random_set(1, 3) and fragment.input_array[1] > random_set(1, 3) and (action & Actions.action_left_forward):
 			return True
-		if fragment.input_array[2] > random_set(0.5, 1.5) and fragment.input_array[0] > random_set(1, 3) and fragment.input_array[1] < 2 and (action & Actions.action_right_forward):
+		if fragment.input_array[2] > random_set(0.5, 1.5) and fragment.input_array[0] > random_set(1, 3) and fragment.input_array[1] < random_set(1, 3) and (action & Actions.action_right_forward):
 			return True
 		if fragment.input_array[2] <= random_set(0.5, 1.5) and action & Actions.action_right_forward and action & Actions.action_left_forward:
 			return True

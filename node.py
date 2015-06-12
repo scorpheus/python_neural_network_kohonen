@@ -46,15 +46,14 @@ class Node:
 		# move randomly somewhere
 		if plus_input.key_down(gs.InputDevice.KeyR):
 			self.decision_maker.reset_progress()
-			self.pos.x = -1 + randrange(100)* 0.01 * (10 - 1)
-			self.pos.y = -1 + randrange(100)* 0.01 * (10 - 1)
+			self.pos.x = -1 + randrange(100) * 0.01 * (10 - 1)
+			self.pos.y = -1 + randrange(100) * 0.01 * (10 - 1)
 
 	def draw(self):
 		width = render.get_renderer().GetCurrentOutputWindow().GetSize().x
 		height = render.get_renderer().GetCurrentOutputWindow().GetSize().y
 
 		self.inputs.draw()
-		self.kohonen_behaviour.draw(width, height)
 
 		angle_dir = acos(self.dir.Normalized().Dot(gs.Vector2(1, 0))) * (-1 if self.dir.y > 0 else 1)
 		render.geometry3d(self.pos.x, 0, self.pos.y, self.geo, 0, angle_dir + 1.57, 0)
