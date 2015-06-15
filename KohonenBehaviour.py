@@ -88,7 +88,7 @@ class KohonenBehaviour:
 
 		# draw neural network
 		previous_point = np.empty((neural_network.nb_neurone))
-		y_part = (height*0.25) / (neural_network.m_NbInput+1)
+		y_part = (height*0.75) / (neural_network.m_NbInput+1)
 		color = gs.Color(1, 1, 1)
 		for input in range(neural_network.m_NbInput):
 			y = (height*0.25) + y_part * (input + 1)

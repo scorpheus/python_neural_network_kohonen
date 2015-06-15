@@ -16,8 +16,8 @@ class Actions(BaseActions):
 	def __init__(self):
 		# compute nb of actions
 		nb_actions = 4 * 4
-		self.speed = 0.01
-		self.rot_speed = 0.1
+		self.speed = 0.03
+		self.rot_speed = 0.3
 
 		super().__init__(nb_actions)
 		self.action_names = ["left backward", "left forward", "right backward", "right forward"]
