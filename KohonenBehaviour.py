@@ -48,16 +48,21 @@ class KohonenBehaviour:
 			self.last_messed_up_nb_fragment_in_memory = memory.GetNbFragment()
 			neural_network.MessedUpNeuroneInputs(self.node_inputs)
 
-		map_neural_network_on_memory = True
-		if False:    # training
-			pass
+		not_training_use_directly_the_brain = False
+		if not_training_use_directly_the_brain:
+			current_fragment = self.node_inputs.GetCurrentNodeFragment()
+			map_neural_network_on_memory = False
 		else:
-			if randrange(100) < 30 and memory.GetNbFragment() > 0: # get a value from the memory to train de map, this is a test for the moment TODO
-				# print('random fragment: '+str(randrange(memory.GetNbFragment())))
-				current_fragment = memory.fragment_array[randrange(memory.GetNbFragment())]
+			map_neural_network_on_memory = True
+			if False:    # not training
+				pass
 			else:
-				current_fragment = self.node_inputs.GetCurrentNodeFragment()
-				map_neural_network_on_memory = False
+				if randrange(100) < 30 and memory.GetNbFragment() > 0: # get a value from the memory to train de map, this is a test for the moment TODO
+					# print('random fragment: '+str(randrange(memory.GetNbFragment())))
+					current_fragment = memory.fragment_array[randrange(memory.GetNbFragment())]
+				else:
+					current_fragment = self.node_inputs.GetCurrentNodeFragment()
+					map_neural_network_on_memory = False
 
 		# randomly label the neurone to keep it fresh with the new input
 		if randrange(1000) == 1 and memory.GetNbFragment() > 0:
@@ -67,9 +72,10 @@ class KohonenBehaviour:
 		#  get the action from the neural network for this fragment
 		selected_action = int(neural_network.Update(current_fragment.input_array, map_neural_network_on_memory))
 
+		if not not_training_use_directly_the_brain:
 		# sometime don't listen to the brain and do instinct stupidity
-		if randrange(1000) < 30 or selected_action == -1:
-			selected_action = randrange(self.nb_actions)
+			if randrange(1000) < 30 or selected_action == -1:
+				selected_action = randrange(self.nb_actions)
 
 		# if the selected action is validate as good by the decision maker, keep in memory
 		if self.decision_maker.is_good_action(current_fragment, selected_action):
