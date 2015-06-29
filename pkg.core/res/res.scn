@@ -1,0 +1,171 @@
+{
+	"Scene": {
+		"Editor": {
+			"SceneTools": {}
+		},
+		"Components": {
+			"gs::core::Environment": {
+				"AmbientColor": {
+					"r": 0.4001,
+					"g": 0.4001,
+					"b": 0.4001
+				},
+				"FogColor": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				}
+			}
+		},
+		"Nodes": {
+			"Node": {
+				"Uid": 1,
+				"Name": "tile_0",
+				"Components": {
+					"gs::core::Transform": {},
+					"gs::core::Object": {
+						"Geometry": "@core/res/tile_0.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 2,
+				"Name": "wall_1m_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 2.0,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "@core/res/wall_1m_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 3,
+				"Name": "wall_2m_high",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 4.0,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "@core/res/wall_2m_high.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 4,
+				"Name": "robot",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": -1.4062,
+							"y": 0.0,
+							"z": 0.0
+						}
+					},
+					"gs::core::Object": {
+						"Geometry": "@core/res/robot.geo"
+					}
+				}
+			},
+			"Node": {
+				"Uid": 5,
+				"Name": "Default Camera",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 6.1656,
+							"y": 6.4985,
+							"z": 9.862
+						},
+						"Rotation": {
+							"x": 0.5271,
+							"y": -2.6421,
+							"z": 0.0
+						},
+						"Scale": {
+							"x": 1.0002,
+							"y": 1.0002,
+							"z": 1.0002
+						}
+					},
+					"gs::core::Camera": {
+						"ZNear": 0.1001,
+						"ZFar": 50000.0
+					}
+				}
+			},
+			"Node": {
+				"Uid": 6,
+				"Name": "New Light",
+				"Components": {
+					"gs::core::Transform": {
+						"Position": {
+							"x": 0.0,
+							"y": 2.9859,
+							"z": 4.5612
+						}
+					},
+					"gs::core::Light": {
+						"Shadow": "ShadowMap",
+						"ShadowRange": 0.0
+					}
+				}
+			},
+			"Node": {
+				"Uid": 7,
+				"Name": "Plane",
+				"Components": {
+					"gs::core::Transform": {},
+					"gs::core::LogicScript": {
+						"gs::core::Script": {
+							"Path": "@core/lua/plane.lua",
+							"Parameters": {
+								"Parameter": {
+									"Name": "width",
+									"Type": "int",
+									"Value": 100
+								},
+								"Parameter": {
+									"Name": "length",
+									"Type": "int",
+									"Value": 100
+								},
+								"Parameter": {
+									"Name": "subdiv_x",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "subdiv_z",
+									"Type": "int",
+									"Value": 1
+								},
+								"Parameter": {
+									"Name": "material",
+									"Type": "gs::render::sMaterial",
+									"Value": "@core/materials/default.mat"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"NodeHierarchy": {},
+		"Skins": {},
+		"State": {
+			"CurrentCamera": {
+				"Uid": 5
+			}
+		}
+	}
+}

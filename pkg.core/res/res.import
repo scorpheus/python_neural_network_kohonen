@@ -1,0 +1,1 @@
+<info plugin="FBX Importer" url="c:/works/nengine/gs-reboot/work_files/@core/res.fbx" base_name="res"><config fix_geometry_orientation="True" scene_policy="skip" output="@core/res" recalculate_tangent="True" texture_policy="skip" scale="1.0" material_policy="skip" geometry_scale="1.0" geometry_policy="overwrite" /></info>
