@@ -54,15 +54,12 @@ class KohonenBehaviour:
 			map_neural_network_on_memory = False
 		else:
 			map_neural_network_on_memory = True
-			if False:    # not training
-				pass
+			if randrange(100) < 30 and memory.GetNbFragment() > 0: # get a value from the memory to train de map, this is a test for the moment TODO
+				# print('random fragment: '+str(randrange(memory.GetNbFragment())))
+				current_fragment = memory.fragment_array[randrange(memory.GetNbFragment())]
 			else:
-				if randrange(100) < 30 and memory.GetNbFragment() > 0: # get a value from the memory to train de map, this is a test for the moment TODO
-					# print('random fragment: '+str(randrange(memory.GetNbFragment())))
-					current_fragment = memory.fragment_array[randrange(memory.GetNbFragment())]
-				else:
-					current_fragment = self.node_inputs.GetCurrentNodeFragment()
-					map_neural_network_on_memory = False
+				current_fragment = self.node_inputs.GetCurrentNodeFragment()
+				map_neural_network_on_memory = False
 
 		# randomly label the neurone to keep it fresh with the new input
 		if randrange(1000) == 1 and memory.GetNbFragment() > 0:
@@ -108,10 +105,10 @@ class KohonenBehaviour:
 				if neural_network.neurone_action_array[id_neurone] != -1:
 					color = self.color_array[neural_network.neurone_action_array[id_neurone]]
 				range_value_input = range_adjust(value_input_neurone, min, max, 10, width)
-				render.line2d(range_value_input, y, range_value_input, y+20, color, color)
+				render.line2d(range_value_input, y, range_value_input, y+2, color, color)
 
 				if input != 0:
-					render.line2d(previous_point[id_neurone], y-y_part+20, range_value_input, y, color, color)
+					render.line2d(previous_point[id_neurone], y-y_part+2, range_value_input, y, color, color)
 				previous_point[id_neurone] = range_value_input
 
 		# return

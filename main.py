@@ -9,14 +9,19 @@ import KohonenBehaviour
 # from node_1_input_move_backward_stop_forward.node_input_1_input_dist_front import NodeInputs
 # from node_1_input_move_backward_stop_forward.action_3_backward_stop_forward import Actions
 # from node_1_input_move_backward_stop_forward.decision_maker import DecisionMaker
-
-from node_2_inputs_move_right_left_wheel.node_input_2_input_dist_front_right_left import NodeInputs
-from node_2_inputs_move_right_left_wheel.action_4_move_right_left_wheel import Actions
-from node_2_inputs_move_right_left_wheel.decision_maker import DecisionMaker
+#
+# from node_2_inputs_move_right_left_wheel.node_input_2_input_dist_front_right_left import NodeInputs
+# from node_2_inputs_move_right_left_wheel.action_4_move_right_left_wheel import Actions
+# from node_2_inputs_move_right_left_wheel.decision_maker import DecisionMaker
 
 # from node_2_inputs_move_right_left_wheel_new_decision.node_input_2_input_dist_front_right_left import NodeInputs
 # from node_2_inputs_move_right_left_wheel_new_decision.action_4_move_right_left_wheel import Actions
 # from node_2_inputs_move_right_left_wheel_new_decision.decision_maker import DecisionMaker
+
+from node_input_to_output.node_input_sensors_previous_behaviours import NodeInputs
+from node_input_to_output.action_4_move_right_left_wheel import Actions
+from node_input_to_output.decision_maker import DecisionMaker
+
 
 # import and init OOKPY
 import gs
@@ -31,7 +36,7 @@ fps = camera.fps_controller(0, 15, 0)
 array_perso = []
 # init perso
 
-for i in range(5):
+for i in range(1):
 	perso_inputs = NodeInputs()
 	perso_actions = Actions()
 	perso_decision_maker = DecisionMaker()
@@ -54,7 +59,6 @@ def play_simulation():
 			perso.update(physic_world)
 
 		array_perso[0].kohonen_behaviour.draw(render.get_renderer().GetCurrentOutputWindow().GetSize().x, render.get_renderer().GetCurrentOutputWindow().GetSize().y)
-
 
 		physic_world.draw()
 
