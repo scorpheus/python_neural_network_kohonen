@@ -65,14 +65,8 @@ class NeuralNetwork:
 				self.m_InLearning = False
 				self.labelling()
 
-		#
-		# g_System->GetTextManager().DrawText(V2Di(10,70), false, NULL, "Activation area: %.3f",  g_ActivationArea);
-		# g_System->GetTextManager().DrawText(V2Di(10,90), false, NULL, "Learning Rate: %.4f", g_LearningRate);
-		#
-		#
 		# for each neurone, compute the output from the input 
 		# and find which one is the winner, with the less output value;
-		
 		# create the float array
 		l_CurrentWinner = self.FindTheWinner(_InputArray, True)
 
@@ -81,37 +75,36 @@ class NeuralNetwork:
 			l_DivActivationArea = 1/(2 * self.g_ActivationArea*self.g_ActivationArea)
 
 			# knowing who is the winner, update his weight and the weight of his neighbors
-			for id_neurone in range(self.nb_neurone):
-				l_SumDistance = 0
-
-				# find the distance from the winner
-				for input in range(self.m_NbInput):
-
-					# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-					l_WeightLinkValueWinner = self.inputs_array[input][l_CurrentWinner] / self.m_MaxWeightInputsArray[input]
-					l_WeightLinkValue = self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
-
-					l_SumDistance += (l_WeightLinkValueWinner - l_WeightLinkValue) * (l_WeightLinkValueWinner - l_WeightLinkValue)
-
+			# for id_neurone in range(self.nb_neurone):
+			# 	l_SumDistance = 0
+			#
+			# 	# find the distance from the winner
+			# 	for input in range(self.m_NbInput):
+			#
+			# 		# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
+			# 		l_WeightLinkValueWinner = self.inputs_array[input][l_CurrentWinner] / self.m_MaxWeightInputsArray[input]
+			# 		l_WeightLinkValue = self.inputs_array[input][id_neurone] / self.m_MaxWeightInputsArray[input]
+			#
+			# 		l_SumDistance += (l_WeightLinkValueWinner - l_WeightLinkValue) * (l_WeightLinkValueWinner - l_WeightLinkValue)
+			#
+			# 	l_Distance = math.exp((-(l_SumDistance*l_DivActivationArea))) * self.g_LearningRate
+			# 	for input in range(self.m_NbInput):
+			# 		# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
+			# 		l_InputValue = _InputArray[input]
+			# 		l_WeightLinkValue = self.inputs_array[input][id_neurone]
+			# 		self.inputs_array[input][id_neurone] = l_WeightLinkValue + l_Distance*(l_InputValue - l_WeightLinkValue)
 
 			# knowing who is the winner, update his weight and the weight of his neighbors
 			# find the distance from the winner
 			# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-			# l_WeightLinkValueWinner = self.inputs_array[:, l_CurrentWinner] / self.m_MaxWeightInputsArray
-			# l_WeightLinkValue = self.inputs_array[:, :] / self.m_MaxWeightInputsArray[:, np.newaxis]
-			#
-			# l_SumDistance = ((l_WeightLinkValueWinner - np.swapaxes(l_WeightLinkValue, 0, 1))**2).sum(axis=1)
-			#
-			# l_Distance = np.exp(-(l_SumDistance*l_DivActivationArea)) * self.g_LearningRate
+			l_WeightLinkValueWinner = self.inputs_array[:, l_CurrentWinner] / self.m_MaxWeightInputsArray
+			l_WeightLinkValue = self.inputs_array[:, :] / self.m_MaxWeightInputsArray[:, np.newaxis]
 
-				l_Distance = math.exp((-(l_SumDistance*l_DivActivationArea))) * self.g_LearningRate
-				for input in range(self.m_NbInput):
-					# For this neurone, the  sum of the input - the weight of this input with this neurone, it's an euclidean distance;
-					l_InputValue = _InputArray[input]
-					l_WeightLinkValue = self.inputs_array[input][id_neurone]
-					self.inputs_array[input][id_neurone] = l_WeightLinkValue + l_Distance*(l_InputValue - l_WeightLinkValue)
+			l_SumDistance = ((l_WeightLinkValueWinner - np.swapaxes(l_WeightLinkValue, 0, 1))**2).sum(axis=1)
 
-			# self.inputs_array = l_WeightLinkValue + l_Distance*(_InputArray[:, np.newaxis] - self.inputs_array)
+			l_Distance = np.exp(-(l_SumDistance*l_DivActivationArea)) * self.g_LearningRate
+
+			self.inputs_array += l_Distance*(_InputArray[:, np.newaxis] - self.inputs_array)
 
 			## for the winner, update and put his own input entry to the near state
 			#for(jint i= 0; i<m_NbInput; ++i)
