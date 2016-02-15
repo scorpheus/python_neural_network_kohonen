@@ -11,7 +11,7 @@ import numpy as np
 class NodeInputs(BaseNodeInputs):
 
 	def __init__(self):
-		self.previous_behaviours = np.zeros((50,))
+		self.previous_behaviours = np.zeros((5,))
 		super().__init__(3 + len(self.previous_behaviours))
 
 		# set the min max for the two input

@@ -9,7 +9,7 @@ import KohonenBehaviour
 # from node_1_input_move_backward_stop_forward.node_input_1_input_dist_front import NodeInputs
 # from node_1_input_move_backward_stop_forward.action_3_backward_stop_forward import Actions
 # from node_1_input_move_backward_stop_forward.decision_maker import DecisionMaker
-#
+
 # from node_2_inputs_move_right_left_wheel.node_input_2_input_dist_front_right_left import NodeInputs
 # from node_2_inputs_move_right_left_wheel.action_4_move_right_left_wheel import Actions
 # from node_2_inputs_move_right_left_wheel.decision_maker import DecisionMaker
@@ -30,13 +30,14 @@ import gs.plus.input as input
 import gs.plus.render as render
 import gs.plus.camera as camera
 
+gs.LoadPlugins(gs.get_default_plugins_path())
 render.init(640, 480, "pkg.core")
 fps = camera.fps_controller(0, 15, 0)
 
 array_perso = []
 # init perso
 
-for i in range(1):
+for i in range(5):
 	perso_inputs = NodeInputs()
 	perso_actions = Actions()
 	perso_decision_maker = DecisionMaker()

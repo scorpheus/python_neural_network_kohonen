@@ -8,7 +8,7 @@ class BaseDecisionMaker:
 	def __init__(self):
 		self.node = None
 
-	def reset_progress(self):
+	def reset_progress(self, pos):
 		pass
 
 	def set_node(self, n):

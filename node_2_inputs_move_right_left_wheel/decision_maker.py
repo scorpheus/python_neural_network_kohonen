@@ -16,11 +16,11 @@ class DecisionMaker(BaseDecisionMaker):
 		super().__init__()
 
 		self.progress = []
-		self.reset_progress()
+		self.reset_progress(gs.Vector2(-1000, 0))
 
-	def reset_progress(self):
+	def reset_progress(self, pos):
 		for i in range(10):
-			self.progress.append(gs.Vector2(-1000, 0))
+			self.progress.append(pos)
 
 
 	def is_good_action(self, fragment, action):

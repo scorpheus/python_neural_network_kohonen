@@ -49,11 +49,11 @@ class Node:
 
 		# move randomly somewhere
 		if plus_input.key_down(gs.InputDevice.KeyR):
-			self.decision_maker.reset_progress()
 			while True:
 				self.pos.x = -1 + randrange(100) * 0.01 * (10 - 1)
 				self.pos.y = -1 + randrange(100) * 0.01 * (10 - 1)
 				if not physic_world.in_collision_with_spheres(self.pos, 1):
+					self.decision_maker.reset_progress(self.pos)
 					break
 
 	def draw(self):
